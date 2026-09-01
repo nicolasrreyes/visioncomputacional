@@ -1,0 +1,117 @@
+{
+  "productos_objetivo": [
+    {
+      "id": "caja_carton_chica",
+      "nombre": "Caja de Cartón Pequeña",
+      "descripcion": "Caja de cartón ondulado, dimensiones aproximadas 20x15x10cm, típicamente usada para productos de menor tamaño",
+      "prompts_deteccion": [
+        "small cardboard box",
+        "small brown carton box",
+        "caja de cartón pequeña"
+      ],
+      "umbral_confianza": 0.65,
+      "color_bbox": "#FF6B6B",
+      "peso_aproximado_kg": 0.3,
+      "altura_tipica_cm": 10
+    },
+    {
+      "id": "caja_carton_grande",
+      "nombre": "Caja de Cartón Grande",
+      "descripcion": "Caja de cartón ondulado de mayor tamaño, aproximadamente 40x30x25cm, para productos voluminosos",
+      "prompts_deteccion": [
+        "large cardboard box",
+        "large brown carton",
+        "caja de cartón grande"
+      ],
+      "umbral_confianza": 0.68,
+      "color_bbox": "#D4A574",
+      "peso_aproximado_kg": 0.8,
+      "altura_tipica_cm": 25
+    },
+    {
+      "id": "botella_plastica",
+      "nombre": "Botella Plástica",
+      "descripcion": "Botella de plástico transparente o translúcido, típicamente 500-2000ml, para bebidas o líquidos",
+      "prompts_deteccion": [
+        "plastic bottle",
+        "transparent plastic container",
+        "botella plástica transparente"
+      ],
+      "umbral_confianza": 0.70,
+      "color_bbox": "#4ECDC4",
+      "peso_aproximado_kg": 0.2,
+      "altura_tipica_cm": 25
+    },
+    {
+      "id": "lata_metalica",
+      "nombre": "Lata Metálica",
+      "descripcion": "Lata de aluminio o acero, típicamente para bebidas o productos enlatados, dimensión estándar",
+      "prompts_deteccion": [
+        "metal can",
+        "aluminum can",
+        "beverage can",
+        "lata metálica"
+      ],
+      "umbral_confianza": 0.72,
+      "color_bbox": "#FFE66D",
+      "peso_aproximado_kg": 0.35,
+      "altura_tipica_cm": 12
+    },
+    {
+      "id": "paquete_flexible",
+      "nombre": "Paquete Flexible",
+      "descripcion": "Paquete con material flexible (plástico, papel laminado), típicamente snacks, cereales o productos secos",
+      "prompts_deteccion": [
+        "flexible package",
+        "snack bag",
+        "plastic pouch",
+        "paquete flexible"
+      ],
+      "umbral_confianza": 0.63,
+      "color_bbox": "#95E1D3",
+      "peso_aproximado_kg": 0.15,
+      "altura_tipica_cm": 18
+    },
+    {
+      "id": "bidon_plastico",
+      "nombre": "Bidón Plástico",
+      "descripcion": "Contenedor plástico de gran volumen, típicamente 5-20 litros, para productos químicos, líquidos o granel",
+      "prompts_deteccion": [
+        "plastic container",
+        "plastic drum",
+        "large plastic jug",
+        "bidón plástico"
+      ],
+      "umbral_confianza": 0.70,
+      "color_bbox": "#C7CEEA",
+      "peso_aproximado_kg": 2.5,
+      "altura_tipica_cm": 35
+    },
+    {
+      "id": "pallet_con_cajas",
+      "nombre": "Pallet con Cajas",
+      "descripcion": "Pallet de madera estándar (80x120cm) con cajas apiladas, unidad de almacenamiento consolidada",
+      "prompts_deteccion": [
+        "pallet with boxes",
+        "wooden pallet",
+        "stacked boxes on pallet",
+        "pallet con cajas"
+      ],
+      "umbral_confianza": 0.75,
+      "color_bbox": "#FFB4C2",
+      "peso_aproximado_kg": 50,
+      "altura_tipica_cm": 140
+    }
+  ],
+  "reglas_conteo": {
+    "solapamiento_maximo": 0.15,
+    "frames_para_consolidar": 5,
+    "minimo_detecciones_confirmadas": 2
+  },
+  "metadata": {
+    "version": "1.0",
+    "fecha_creacion": "2026-09-01",
+    "fase": "POC",
+    "modelo_recomendado": "Grounding DINO"
+  }
+}

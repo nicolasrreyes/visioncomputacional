@@ -1,0 +1,5 @@
+zona_id,producto_id,cantidad_esperada,ubicacion_exacta,fecha_ultimo_recuento,notas
+estanteria_a,caja_carton_chica,8,estante_superior_izq,2026-09-01,Para test: coincidencia exacta
+estanteria_a,botella_plastica,12,estante_medio,2026-09-01,Para test: coincidencia exacta
+estanteria_b,paquete_flexible,10,estante_superior,2026-09-01,Para test: detectar sobrante (esperamos 10, detectamos 12)
+mesa_recepcion,caja_carton_chica,4,mostrador_izq,2026-09-01,Para test: detectar faltante (esperamos 4, detectamos 2)

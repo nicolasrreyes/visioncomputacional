@@ -1,0 +1,37 @@
+[
+  {
+    "producto_id": "caja_carton_chica",
+    "label": "caja carton chica",
+    "confianza": 0.62,
+    "bbox": [50, 40, 180, 160],
+    "notas": "confianza bajo umbral (0.65)"
+  },
+  {
+    "producto_id": "caja_carton_chica",
+    "label": "caja carton chica",
+    "confianza": 0.64,
+    "bbox": [210, 45, 340, 170],
+    "notas": "confianza justo bajo umbral"
+  },
+  {
+    "producto_id": "botella_plastica",
+    "label": "botella plastica",
+    "confianza": 0.61,
+    "bbox": [380, 90, 430, 220],
+    "notas": "confianza bajo umbral (0.70)"
+  },
+  {
+    "producto_id": "botella_plastica",
+    "label": "botella plastica",
+    "confianza": 0.68,
+    "bbox": [450, 95, 500, 225],
+    "notas": "confianza justo bajo umbral"
+  },
+  {
+    "producto_id": "lata_metalica",
+    "label": "lata metalica",
+    "confianza": 0.58,
+    "bbox": [550, 100, 600, 230],
+    "notas": "confianza bajo umbral (0.72) - producto no esperado"
+  }
+]

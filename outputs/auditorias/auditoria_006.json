@@ -1,0 +1,111 @@
+{
+  "auditoria_id": "auditoria_006",
+  "fecha_hora": "2026-09-01T17:53:41.361902+00:00",
+  "zona_id": "estanteria_a",
+  "fuente": "imagen",
+  "archivo_original": null,
+  "evidencia_path": null,
+  "duracion_proceso_segundos": 0.0026,
+  "detecciones": [
+    {
+      "producto_id": "caja_carton_chica",
+      "label": "caja carton chica",
+      "confianza": 0.62,
+      "bbox": [
+        50.0,
+        40.0,
+        180.0,
+        160.0
+      ],
+      "estado_visual": "desconocido"
+    },
+    {
+      "producto_id": "caja_carton_chica",
+      "label": "caja carton chica",
+      "confianza": 0.64,
+      "bbox": [
+        210.0,
+        45.0,
+        340.0,
+        170.0
+      ],
+      "estado_visual": "desconocido"
+    },
+    {
+      "producto_id": "botella_plastica",
+      "label": "botella plastica",
+      "confianza": 0.61,
+      "bbox": [
+        380.0,
+        90.0,
+        430.0,
+        220.0
+      ],
+      "estado_visual": "desconocido"
+    },
+    {
+      "producto_id": "botella_plastica",
+      "label": "botella plastica",
+      "confianza": 0.68,
+      "bbox": [
+        450.0,
+        95.0,
+        500.0,
+        225.0
+      ],
+      "estado_visual": "desconocido"
+    },
+    {
+      "producto_id": "lata_metalica",
+      "label": "lata metalica",
+      "confianza": 0.58,
+      "bbox": [
+        550.0,
+        100.0,
+        600.0,
+        230.0
+      ],
+      "estado_visual": "desconocido"
+    }
+  ],
+  "conteos": {},
+  "discrepancias": [
+    {
+      "producto_id": "botella_plastica",
+      "cantidad_esperada": 12,
+      "cantidad_detectada": 0,
+      "diferencia": -12,
+      "estado_operativo": "revisar",
+      "confianza_promedio": 0.0,
+      "requiere_revision": true
+    },
+    {
+      "producto_id": "caja_carton_chica",
+      "cantidad_esperada": 8,
+      "cantidad_detectada": 0,
+      "diferencia": -8,
+      "estado_operativo": "revisar",
+      "confianza_promedio": 0.0,
+      "requiere_revision": true
+    },
+    {
+      "producto_id": "lata_metalica",
+      "cantidad_esperada": 6,
+      "cantidad_detectada": 0,
+      "diferencia": -6,
+      "estado_operativo": "revisar",
+      "confianza_promedio": 0.0,
+      "requiere_revision": true
+    }
+  ],
+  "metricas": {
+    "total_esperado": 26,
+    "total_detectado": 0,
+    "diferencia_total": -26,
+    "cantidad_discrepancias": 3,
+    "porcentaje_coincidencia": 0.0,
+    "confianza_promedio": 0.0,
+    "items_a_revisar": 5,
+    "tiempo_ahorrado_minutos": 6.5
+  }
+}

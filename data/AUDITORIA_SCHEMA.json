@@ -1,0 +1,221 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Esquema de Auditoría Visual de Inventario",
+  "description": "Estructura completa de una auditoria de inventario con detecciones, conteos, discrepancias y métricas",
+  "type": "object",
+  "required": [
+    "auditoria_id",
+    "fecha_hora",
+    "zona_id",
+    "fuente",
+    "detecciones",
+    "conteos",
+    "discrepancias",
+    "metricas"
+  ],
+  "properties": {
+    "auditoria_id": {
+      "type": "string",
+      "description": "Identificador único de la auditoría (ej: auditoria_001)",
+      "pattern": "^[a-z0-9_]+$"
+    },
+    "fecha_hora": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Marca de tiempo en ISO 8601"
+    },
+    "zona_id": {
+      "type": "string",
+      "description": "Identificador de la zona auditada",
+      "enum": [
+        "estanteria_a",
+        "estanteria_b",
+        "mesa_recepcion",
+        "zona_despacho",
+        "palletera"
+      ]
+    },
+    "fuente": {
+      "type": "string",
+      "description": "Origen de la evidencia",
+      "enum": ["imagen", "video", "camara_viva"]
+    },
+    "archivo_original": {
+      "type": "string",
+      "description": "Ruta del archivo de entrada (imagen/video)",
+      "pattern": "^inputs/.*$"
+    },
+    "evidencia_path": {
+      "type": "string",
+      "description": "Ruta de la imagen de evidencia con overlay",
+      "pattern": "^outputs/.*$"
+    },
+    "duracion_proceso_segundos": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Tiempo total de procesamiento"
+    },
+    "detecciones": {
+      "type": "array",
+      "description": "Lista de todos los objetos detectados",
+      "items": {
+        "type": "object",
+        "required": [
+          "producto_id",
+          "label",
+          "confianza",
+          "bbox"
+        ],
+        "properties": {
+          "producto_id": {
+            "type": "string",
+            "description": "ID del producto detectado"
+          },
+          "label": {
+            "type": "string",
+            "description": "Descripción legible del producto"
+          },
+          "confianza": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1,
+            "description": "Confianza de la detección (0-1)"
+          },
+          "bbox": {
+            "type": "array",
+            "minItems": 4,
+            "maxItems": 4,
+            "items": {
+              "type": "number"
+            },
+            "description": "[x, y, width, height] en píxeles"
+          },
+          "estado_visual": {
+            "type": "string",
+            "enum": [
+              "sano",
+              "danado",
+              "parcialmente_visible",
+              "desconocido"
+            ],
+            "description": "Estado observable del producto"
+          }
+        }
+      }
+    },
+    "conteos": {
+      "type": "object",
+      "description": "Conteo final por producto",
+      "additionalProperties": {
+        "type": "integer",
+        "minimum": 0
+      },
+      "example": {
+        "caja_carton_chica": 8,
+        "botella_plastica": 12
+      }
+    },
+    "discrepancias": {
+      "type": "array",
+      "description": "Lista de productos con diferencias vs stock esperado",
+      "items": {
+        "type": "object",
+        "required": [
+          "producto_id",
+          "cantidad_esperada",
+          "cantidad_detectada",
+          "diferencia",
+          "estado_operativo"
+        ],
+        "properties": {
+          "producto_id": {
+            "type": "string"
+          },
+          "cantidad_esperada": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "cantidad_detectada": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "diferencia": {
+            "type": "integer",
+            "description": "detectado - esperado"
+          },
+          "estado_operativo": {
+            "type": "string",
+            "enum": [
+              "OK",
+              "faltante",
+              "sobrante",
+              "revisar"
+            ]
+          },
+          "confianza_promedio": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "requiere_revision": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "metricas": {
+      "type": "object",
+      "description": "Métricas agregadas de la auditoría",
+      "required": [
+        "total_esperado",
+        "total_detectado",
+        "cantidad_discrepancias",
+        "porcentaje_coincidencia",
+        "confianza_promedio",
+        "items_a_revisar"
+      ],
+      "properties": {
+        "total_esperado": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Suma de cantidades esperadas"
+        },
+        "total_detectado": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Suma de cantidades detectadas válidas"
+        },
+        "diferencia_total": {
+          "type": "integer",
+          "description": "total_detectado - total_esperado"
+        },
+        "cantidad_discrepancias": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Cantidad de productos con estado != OK"
+        },
+        "porcentaje_coincidencia": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100,
+          "description": "Porcentaje de coincidencia con stock esperado"
+        },
+        "confianza_promedio": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Promedio de confianza de detecciones"
+        },
+        "items_a_revisar": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Cantidad de items con estado revisar"
+        },
+        "tiempo_ahorrado_minutos": {
+          "type": "number",
+          "description": "Estimación de tiempo ahorrado vs. conteo manual"
+        }
+      }
+    }
+  }
+}

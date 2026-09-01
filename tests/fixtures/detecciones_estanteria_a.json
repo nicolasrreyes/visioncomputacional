@@ -1,0 +1,116 @@
+[
+  {
+    "producto_id": "caja_carton_chica",
+    "label": "caja carton chica",
+    "confianza": 0.87,
+    "bbox": [50, 40, 180, 160]
+  },
+  {
+    "producto_id": "caja_carton_chica",
+    "label": "caja carton chica",
+    "confianza": 0.82,
+    "bbox": [210, 45, 340, 170]
+  },
+  {
+    "producto_id": "caja_carton_chica",
+    "label": "caja carton chica",
+    "confianza": 0.79,
+    "bbox": [370, 50, 490, 175]
+  },
+  {
+    "producto_id": "caja_carton_chica",
+    "label": "caja carton chica",
+    "confianza": 0.85,
+    "bbox": [50, 200, 160, 330]
+  },
+  {
+    "producto_id": "caja_carton_chica",
+    "label": "caja carton chica",
+    "confianza": 0.81,
+    "bbox": [200, 200, 310, 330]
+  },
+  {
+    "producto_id": "caja_carton_chica",
+    "label": "caja carton chica",
+    "confianza": 0.88,
+    "bbox": [350, 200, 460, 330]
+  },
+  {
+    "producto_id": "caja_carton_chica",
+    "label": "caja carton chica",
+    "confianza": 0.84,
+    "bbox": [500, 200, 610, 330]
+  },
+  {
+    "producto_id": "caja_carton_chica",
+    "label": "caja carton chica",
+    "confianza": 0.86,
+    "bbox": [50, 400, 160, 530]
+  },
+  {
+    "producto_id": "botella_plastica",
+    "label": "botella plastica",
+    "confianza": 0.75,
+    "bbox": [380, 90, 430, 220]
+  },
+  {
+    "producto_id": "botella_plastica",
+    "label": "botella plastica",
+    "confianza": 0.78,
+    "bbox": [450, 95, 500, 225]
+  },
+  {
+    "producto_id": "botella_plastica",
+    "label": "botella plastica",
+    "confianza": 0.72,
+    "bbox": [50, 350, 100, 480]
+  },
+  {
+    "producto_id": "botella_plastica",
+    "label": "botella plastica",
+    "confianza": 0.80,
+    "bbox": [120, 355, 170, 485]
+  },
+  {
+    "producto_id": "botella_plastica",
+    "label": "botella plastica",
+    "confianza": 0.76,
+    "bbox": [190, 350, 240, 480]
+  },
+  {
+    "producto_id": "botella_plastica",
+    "label": "botella plastica",
+    "confianza": 0.74,
+    "bbox": [260, 355, 310, 485]
+  },
+  {
+    "producto_id": "botella_plastica",
+    "label": "botella plastica",
+    "confianza": 0.79,
+    "bbox": [330, 350, 380, 480]
+  },
+  {
+    "producto_id": "botella_plastica",
+    "label": "botella plastica",
+    "confianza": 0.77,
+    "bbox": [400, 355, 450, 485]
+  },
+  {
+    "producto_id": "botella_plastica",
+    "label": "botella plastica",
+    "confianza": 0.81,
+    "bbox": [470, 350, 520, 480]
+  },
+  {
+    "producto_id": "botella_plastica",
+    "label": "botella plastica",
+    "confianza": 0.73,
+    "bbox": [540, 355, 590, 485]
+  },
+  {
+    "producto_id": "botella_plastica",
+    "label": "botella plastica",
+    "confianza": 0.75,
+    "bbox": [610, 350, 660, 480]
+  }
+]

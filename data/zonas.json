@@ -1,0 +1,112 @@
+{
+  "zonas": [
+    {
+      "id": "estanteria_a",
+      "nombre": "Estantería A",
+      "descripcion": "Estantería metálica de 3 niveles ubicada en la zona norte del depósito",
+      "ubicacion_fisica": "Zona Norte, Fila 1",
+      "dimensiones_m": {
+        "largo": 1.2,
+        "ancho": 0.6,
+        "alto": 2.0
+      },
+      "capacidad_aproximada_cajas": 24,
+      "iluminacion": "natural y artificial",
+      "accesibilidad": "media",
+      "productos_permitidos": [
+        "caja_carton_chica",
+        "caja_carton_grande",
+        "botella_plastica",
+        "lata_metalica"
+      ]
+    },
+    {
+      "id": "estanteria_b",
+      "nombre": "Estantería B",
+      "descripcion": "Estantería metálica de 4 niveles ubicada en la zona sur del depósito",
+      "ubicacion_fisica": "Zona Sur, Fila 2",
+      "dimensiones_m": {
+        "largo": 1.2,
+        "ancho": 0.6,
+        "alto": 2.5
+      },
+      "capacidad_aproximada_cajas": 32,
+      "iluminacion": "artificial",
+      "accesibilidad": "media",
+      "productos_permitidos": [
+        "caja_carton_grande",
+        "paquete_flexible",
+        "bidon_plastico",
+        "botella_plastica"
+      ]
+    },
+    {
+      "id": "mesa_recepcion",
+      "nombre": "Mesa de Recepción",
+      "descripcion": "Mostrador de recepción donde se clasifican productos recién ingresados",
+      "ubicacion_fisica": "Entrada principal, Zona Central",
+      "dimensiones_m": {
+        "largo": 2.0,
+        "ancho": 1.0,
+        "alto": 0.9
+      },
+      "capacidad_aproximada_cajas": 15,
+      "iluminacion": "artificial",
+      "accesibilidad": "alta",
+      "productos_permitidos": [
+        "caja_carton_chica",
+        "caja_carton_grande",
+        "botella_plastica"
+      ]
+    },
+    {
+      "id": "zona_despacho",
+      "nombre": "Zona de Despacho",
+      "descripcion": "Área de preparación de pedidos para envío",
+      "ubicacion_fisica": "Lateral Este, junto a puerta de salida",
+      "dimensiones_m": {
+        "largo": 3.0,
+        "ancho": 2.0,
+        "alto": 3.0
+      },
+      "capacidad_aproximada_cajas": 60,
+      "iluminacion": "artificial",
+      "accesibilidad": "alta",
+      "productos_permitidos": [
+        "caja_carton_chica",
+        "caja_carton_grande",
+        "paquete_flexible",
+        "pallet_con_cajas"
+      ]
+    },
+    {
+      "id": "palletera",
+      "nombre": "Palletera",
+      "descripcion": "Área de almacenamiento de pallets completos de reserva",
+      "ubicacion_fisica": "Fondo del depósito, Zona Oeste",
+      "dimensiones_m": {
+        "largo": 4.0,
+        "ancho": 3.0,
+        "alto": 3.5
+      },
+      "capacidad_aproximada_cajas": 200,
+      "iluminacion": "artificial",
+      "accesibilidad": "media",
+      "productos_permitidos": [
+        "pallet_con_cajas"
+      ]
+    }
+  ],
+  "flujo_logistico": {
+    "entrada": "mesa_recepcion",
+    "almacenamiento_temporal": ["estanteria_a", "estanteria_b"],
+    "preparacion": "zona_despacho",
+    "almacenamiento_largo_plazo": "palletera"
+  },
+  "metadata": {
+    "version": "1.0",
+    "fecha_creacion": "2026-09-01",
+    "fase": "POC",
+    "total_zonas": 5
+  }
+}

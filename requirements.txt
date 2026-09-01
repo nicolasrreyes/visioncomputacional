@@ -1,0 +1,5 @@
+fastapi>=0.141.1
+uvicorn
+pydantic
+pytest
+streamlit>=1.63.0

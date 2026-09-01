@@ -1,0 +1,282 @@
+{
+  "auditoria_id": "auditoria_007",
+  "fecha_hora": "2026-09-01T17:55:08.127891+00:00",
+  "zona_id": "estanteria_a",
+  "fuente": "imagen",
+  "archivo_original": null,
+  "evidencia_path": null,
+  "duracion_proceso_segundos": 0.0025,
+  "detecciones": [
+    {
+      "producto_id": "caja_carton_chica",
+      "label": "caja carton chica",
+      "confianza": 0.87,
+      "bbox": [
+        50.0,
+        40.0,
+        180.0,
+        160.0
+      ],
+      "estado_visual": "desconocido"
+    },
+    {
+      "producto_id": "caja_carton_chica",
+      "label": "caja carton chica",
+      "confianza": 0.82,
+      "bbox": [
+        210.0,
+        45.0,
+        340.0,
+        170.0
+      ],
+      "estado_visual": "desconocido"
+    },
+    {
+      "producto_id": "caja_carton_chica",
+      "label": "caja carton chica",
+      "confianza": 0.79,
+      "bbox": [
+        370.0,
+        50.0,
+        490.0,
+        175.0
+      ],
+      "estado_visual": "desconocido"
+    },
+    {
+      "producto_id": "caja_carton_chica",
+      "label": "caja carton chica",
+      "confianza": 0.85,
+      "bbox": [
+        50.0,
+        200.0,
+        160.0,
+        330.0
+      ],
+      "estado_visual": "desconocido"
+    },
+    {
+      "producto_id": "caja_carton_chica",
+      "label": "caja carton chica",
+      "confianza": 0.81,
+      "bbox": [
+        200.0,
+        200.0,
+        310.0,
+        330.0
+      ],
+      "estado_visual": "desconocido"
+    },
+    {
+      "producto_id": "caja_carton_chica",
+      "label": "caja carton chica",
+      "confianza": 0.88,
+      "bbox": [
+        350.0,
+        200.0,
+        460.0,
+        330.0
+      ],
+      "estado_visual": "desconocido"
+    },
+    {
+      "producto_id": "caja_carton_chica",
+      "label": "caja carton chica",
+      "confianza": 0.84,
+      "bbox": [
+        500.0,
+        200.0,
+        610.0,
+        330.0
+      ],
+      "estado_visual": "desconocido"
+    },
+    {
+      "producto_id": "caja_carton_chica",
+      "label": "caja carton chica",
+      "confianza": 0.86,
+      "bbox": [
+        50.0,
+        400.0,
+        160.0,
+        530.0
+      ],
+      "estado_visual": "desconocido"
+    },
+    {
+      "producto_id": "botella_plastica",
+      "label": "botella plastica",
+      "confianza": 0.75,
+      "bbox": [
+        380.0,
+        90.0,
+        430.0,
+        220.0
+      ],
+      "estado_visual": "desconocido"
+    },
+    {
+      "producto_id": "botella_plastica",
+      "label": "botella plastica",
+      "confianza": 0.78,
+      "bbox": [
+        450.0,
+        95.0,
+        500.0,
+        225.0
+      ],
+      "estado_visual": "desconocido"
+    },
+    {
+      "producto_id": "botella_plastica",
+      "label": "botella plastica",
+      "confianza": 0.72,
+      "bbox": [
+        50.0,
+        350.0,
+        100.0,
+        480.0
+      ],
+      "estado_visual": "desconocido"
+    },
+    {
+      "producto_id": "botella_plastica",
+      "label": "botella plastica",
+      "confianza": 0.8,
+      "bbox": [
+        120.0,
+        355.0,
+        170.0,
+        485.0
+      ],
+      "estado_visual": "desconocido"
+    },
+    {
+      "producto_id": "botella_plastica",
+      "label": "botella plastica",
+      "confianza": 0.76,
+      "bbox": [
+        190.0,
+        350.0,
+        240.0,
+        480.0
+      ],
+      "estado_visual": "desconocido"
+    },
+    {
+      "producto_id": "botella_plastica",
+      "label": "botella plastica",
+      "confianza": 0.74,
+      "bbox": [
+        260.0,
+        355.0,
+        310.0,
+        485.0
+      ],
+      "estado_visual": "desconocido"
+    },
+    {
+      "producto_id": "botella_plastica",
+      "label": "botella plastica",
+      "confianza": 0.79,
+      "bbox": [
+        330.0,
+        350.0,
+        380.0,
+        480.0
+      ],
+      "estado_visual": "desconocido"
+    },
+    {
+      "producto_id": "botella_plastica",
+      "label": "botella plastica",
+      "confianza": 0.77,
+      "bbox": [
+        400.0,
+        355.0,
+        450.0,
+        485.0
+      ],
+      "estado_visual": "desconocido"
+    },
+    {
+      "producto_id": "botella_plastica",
+      "label": "botella plastica",
+      "confianza": 0.81,
+      "bbox": [
+        470.0,
+        350.0,
+        520.0,
+        480.0
+      ],
+      "estado_visual": "desconocido"
+    },
+    {
+      "producto_id": "botella_plastica",
+      "label": "botella plastica",
+      "confianza": 0.73,
+      "bbox": [
+        540.0,
+        355.0,
+        590.0,
+        485.0
+      ],
+      "estado_visual": "desconocido"
+    },
+    {
+      "producto_id": "botella_plastica",
+      "label": "botella plastica",
+      "confianza": 0.75,
+      "bbox": [
+        610.0,
+        350.0,
+        660.0,
+        480.0
+      ],
+      "estado_visual": "desconocido"
+    }
+  ],
+  "conteos": {
+    "caja_carton_chica": 8,
+    "botella_plastica": 11
+  },
+  "discrepancias": [
+    {
+      "producto_id": "botella_plastica",
+      "cantidad_esperada": 12,
+      "cantidad_detectada": 11,
+      "diferencia": -1,
+      "estado_operativo": "faltante",
+      "confianza_promedio": 0.7636,
+      "requiere_revision": false
+    },
+    {
+      "producto_id": "caja_carton_chica",
+      "cantidad_esperada": 8,
+      "cantidad_detectada": 8,
+      "diferencia": 0,
+      "estado_operativo": "OK",
+      "confianza_promedio": 0.84,
+      "requiere_revision": false
+    },
+    {
+      "producto_id": "lata_metalica",
+      "cantidad_esperada": 6,
+      "cantidad_detectada": 0,
+      "diferencia": -6,
+      "estado_operativo": "faltante",
+      "confianza_promedio": 0.0,
+      "requiere_revision": false
+    }
+  ],
+  "metricas": {
+    "total_esperado": 26,
+    "total_detectado": 19,
+    "diferencia_total": -7,
+    "cantidad_discrepancias": 2,
+    "porcentaje_coincidencia": 73.08,
+    "confianza_promedio": 0.7958,
+    "items_a_revisar": 0,
+    "tiempo_ahorrado_minutos": 6.5
+  }
+}
