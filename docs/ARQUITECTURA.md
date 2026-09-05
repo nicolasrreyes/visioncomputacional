@@ -59,7 +59,7 @@ sequenceDiagram
 
     F->>A: evidencia (foto | camara | fixture)
     A->>S: procesar
-    S->>D: detectar(productos de la zona, prompts)
+    S->>D: detectar(productos de la zona, prompts + negativos)
     D-->>S: detecciones (bbox + confianza)
     S->>S: NMS + umbral por producto + conteo
     S->>S: comparar contra stock_esperado de la zona
@@ -74,6 +74,8 @@ sequenceDiagram
 | Decision | Por que |
 | --- | --- |
 | **Zero-shot (YOLO-World)** | No requiere dataset propio; se configura por prompts de texto. Permite agregar productos sin reentrenar. |
+| **Clases negativas (`prompts_background`)** | Entran al softmax del clasificador y se filtran del output: bajan falsos positivos sin reentrenar. |
+| **Calidad medible (`scripts/evaluar.py`)** | Harness de evaluación (P/R/F1/mAP + sweep de umbral óptimo) contra ground truth. Los cambios de prompts/umbrales se deciden midiendo, no asumiendo. |
 | **Modelo compartido + locks** | Un solo YOLO en memoria (~340 MB) para todas las conexiones; YOLO no es thread-safe → RLock serializa. |
 | **Single source of truth en `data/`** | Productos, zonas y stock viven en JSON/CSV editables. Agregar producto/zona = editar datos, sin tocar codigo. |
 | **Auditorias en JSON por archivo** | Simple, trazable, auditado por un humano en Git. Suficiente para POC; migrable a DB si escala. |
@@ -89,3 +91,6 @@ sequenceDiagram
    version optimizada (TensorRT / GPU) si la tasa de fotos crece.
 4. Vista de negocio: el dashboard ejecutivo ya consolida ahorro, ROI y discrepancias;
    se puede extender a reportes por turno/sucursal.
+5. Calidad al cambiar de rubro: cero-shot + `prompts_background` para entrar rápido en un
+   rubro nuevo, y `scripts/evaluar.py` (GT anotado) decide si alcanza o hay que entrenar un
+   modelo por catálogo (fine-tuning YOLO). Referencia: `docs/MANUAL_TECNICO.md` §17.

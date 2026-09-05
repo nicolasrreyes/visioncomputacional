@@ -97,8 +97,10 @@ sí se enciende (https), pero depende de internet y del túnel; útil como plan 
 - Mostrar la lista "Auditorías guardadas" y el JSON completo de una auditoría
   (detección, conteo NMS, discrepancias, métricas).
 - Mencionar que el cómputo es local (sin nube), configurable vía
-  `data/productos_objetivo.json` (umbrales, prompts) y que las imágenes demo están
-  atribuidas en `data/demo_images/README.md`.
+  `data/productos_objetivo.json` (umbrales, prompts, clases negativas) y que las imágenes
+  demo están atribuidas en `data/demo_images/README.md`.
+- Opcional: mostrar cómo se valida la calidad con `scripts/evaluar.py` (ver
+  `data/evaluacion/README.md`).
 
 ## Fallbacks / contingencias
 
@@ -109,7 +111,8 @@ sí se enciende (https), pero depende de internet y del túnel; útil como plan 
   detecciones sin pasar por el dashboard.
 - **Numeros que no calzan**: los conteos pueden variar según iluminación/ángulo;
   los umbrales y prompts se retocan en `data/productos_objetivo.json` y se validan con
-  `scripts/validar_deteccion.py --imagen X.jpg --zona Z`.
+  `scripts/validar_deteccion.py --imagen X.jpg --zona Z`, o se calibran con el sweep de
+  `scripts/evaluar.py`.
 
 ## Volver a empezar
 

@@ -127,8 +127,11 @@ Aplicado en esta iteración:
 5. **Cámara en vivo** (`/rtc`): mostrar la superposición en tiempo real y el guardado
    como auditoría `camara_viva`.
 6. **Métricas ejecutivas**: ahorro de tiempo, ROI estimado, distribuciones por zona.
-7. Mencionar **configurabilidad**: umbrales/prompts en JSON, env vars, y que agregar
-   un producto no toca código.
+7. Mencionar **configurabilidad**: umbrales/prompts/clases negativas en JSON, env vars,
+   y que agregar un producto no toca código.
+8. **Calidad medible** (opcional, si sobra tiempo): correr `scripts/evaluar.py --modo conteo`
+   y mostrar P/R/F1 + que el umbral óptimo del sweep calza con el de config. Es la apertura
+   a "cómo cambiamos de rubro sin romper calidad".
 
 Guion paso a paso completo (con números esperados): [docs/DEMO.md](DEMO.md).
 
@@ -140,7 +143,10 @@ Guion paso a paso completo (con números esperados): [docs/DEMO.md](DEMO.md).
 - **Mañana:** N estaciones corriendo la misma app; cada una con su `data/`.
 - **Escala real:** repositorio JSON → base de datos (PostgreSQL); modelo CPU → GPU/TensorRT
   si la tasa de fotos crece; vistas ejecutivas por sucursal/turno.
-- **Nuevos productos:** sin reentrenar (zero-shot), solo editar config.
+- **Nuevos productos:** sin reentrenar (zero-shot), solo editar config; se suman clases
+  negativas (`prompts_background`) para bajar falsos positivos.
+- **Nuevos rubros:** el harness `scripts/evaluar.py` mide P/R/F1/mAP; si el cero-shot
+  no alcanza para un catálogo de marca, se entrena un modelo por catálogo sin cambiar la app.
 
 La arquitectura está preparada para ese camino: capas desacopladas, detección
 intercambiable (mock ↔ real), datos 100% configurables y tests que permiten evolucionar sin romper.

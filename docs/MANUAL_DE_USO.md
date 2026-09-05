@@ -76,7 +76,8 @@ La barra lateral tiene tres bloques:
 El área central muestra:
 - **KPIs** de la última auditoría;
 - **Detalle de auditoría**: al elegir una auditoría se ve su **evidencia anotada**
-  (foto con recuadros), las **discrepancias** y el **JSON completo**;
+  (foto con recuadros), las **discrepancias** y el **JSON completo**. Las auditorías
+  simuladas (sin foto) muestran un aviso en vez de imagen;
 - botón **Recargar auditorías** (limpieza de caché) en la sidebar.
 
 ## 6. Contar stock con una foto propia (paso a paso)
@@ -227,7 +228,7 @@ Guion paso a paso de presentación: `docs/DEMO.md`.
 | --- | --- |
 | La cámara no se enciende en el celular | No es un contexto seguro. Usá `adb reverse` (localhost) o un túnel HTTPS. |
 | Primer procesamiento tarda mucho | El modelo se está cargando (~340 MB) o descargando. Planificá una "pre-carga" antes de la demo: procesá una foto una vez. |
-| No detecta productos | La foto no contiene los 7 productos configurados, o la imagen está muy lejos/deseenfocada. Probá con otra zona o ajustá umbrales/prompts (manual técnico, sección 11). |
+| No detecta productos | La foto no contiene los 7 productos configurados, o la imagen está muy lejos/deseenfocada. Probá con otra zona o ajustá umbrales/prompts (manual técnico, sección 11); calibrá con `scripts/evaluar.py` (sweep de umbral). |
 | "Archivo demasiado grande" (413) | Límite de subida: 10 MB. Reducí la foto. |
 | "Zona desconocida" (400) | Verificá el id de zona en `data/zonas.json` (`GET /zonas`). |
 | Firewall bloquea el celular | Aceptá el permiso de Windows Firewall al levantar la API (`run_demo.ps1` expone `0.0.0.0`). |
