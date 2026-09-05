@@ -7,6 +7,7 @@
       "prompts_deteccion": [
         "small cardboard box",
         "small brown carton box",
+        "a small brown corrugated cardboard box",
         "caja de cartón pequeña"
       ],
       "umbral_confianza": 0.6,
@@ -21,6 +22,7 @@
       "prompts_deteccion": [
         "large cardboard box",
         "large brown carton",
+        "a large corrugated shipping box",
         "caja de cartón grande"
       ],
       "umbral_confianza": 0.28,
@@ -35,6 +37,7 @@
       "prompts_deteccion": [
         "plastic bottle",
         "transparent plastic container",
+        "a clear plastic water bottle",
         "botella plástica transparente"
       ],
       "umbral_confianza": 0.3,
@@ -49,6 +52,7 @@
       "prompts_deteccion": [
         "metal can",
         "aluminum can",
+        "a shiny aluminium drink can",
         "beverage can",
         "lata metálica"
       ],
@@ -64,6 +68,7 @@
       "prompts_deteccion": [
         "flexible package",
         "snack bag",
+        "a sealed plastic snack pouch",
         "plastic pouch",
         "paquete flexible"
       ],
@@ -79,6 +84,7 @@
       "prompts_deteccion": [
         "plastic container",
         "plastic drum",
+        "a large plastic jerrycan",
         "large plastic jug",
         "bidón plástico"
       ],
@@ -108,10 +114,19 @@
     "frames_para_consolidar": 5,
     "minimo_detecciones_confirmadas": 2
   },
+  "prompts_background": [
+    "person",
+    "hand",
+    "shelf",
+    "shopping cart",
+    "receipt",
+    "bicycle"
+  ],
   "metadata": {
-    "version": "1.1",
+    "version": "1.2",
     "fecha_creacion": "2026-09-01",
     "fase": "POC",
-    "modelo_recomendado": "Grounding DINO"
+    "modelo_recomendado": "YOLO-World (zero-shot)",
+    "notas": "1.2: prompts enriquecidos y clases negativas prompts_background para mejorar precision"
   }
 }

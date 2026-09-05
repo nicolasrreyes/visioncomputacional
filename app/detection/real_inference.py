@@ -82,10 +82,13 @@ class RealDetector:
         imagen: str | Path,
         prompts_por_producto: dict[str, list[str]],
         confianza: float = DEFAULT_CONFIANZA,
+        prompts_negativos: list[str] | None = None,
     ) -> list[Deteccion]:
         """Ejecuta deteccion zero-shot sobre una imagen en disco.
 
         prompts_por_producto: mapea producto_id -> lista de prompts en texto.
+        prompts_negativos: clases de background que solo compiten en el softmax
+        (mejoran precision) y NO generan detecciones de salida.
         Devuelve Deteccion con bbox en pixeles [x_min, y_min, x_max, y_max].
         """
         if not prompts_por_producto:
@@ -95,7 +98,7 @@ class RealDetector:
         if not ruta.exists():
             raise FileNotFoundError(f"No existe la imagen: {imagen}")
 
-        mapeo, prompts_planos = self._construir_mapeo(prompts_por_producto)
+        mapeo, prompts_planos = self._construir_mapeo(prompts_por_producto, prompts_negativos)
         with _DETECCION_LOCK:
             self._activar_prompts(prompts_planos)
             resultados = self._model.predict(
@@ -112,6 +115,7 @@ class RealDetector:
         imagen: Any,
         prompts_por_producto: dict[str, list[str]],
         confianza: float = DEFAULT_CONFIANZA,
+        prompts_negativos: list[str] | None = None,
     ) -> list[Deteccion]:
         """Ejecuta deteccion zero-shot sobre un frame en memoria (ndarray BGR).
 
@@ -120,7 +124,7 @@ class RealDetector:
         if not prompts_por_producto:
             return []
 
-        mapeo, prompts_planos = self._construir_mapeo(prompts_por_producto)
+        mapeo, prompts_planos = self._construir_mapeo(prompts_por_producto, prompts_negativos)
         with _DETECCION_LOCK:
             self._activar_prompts(prompts_planos)
             resultados = self._model.predict(
@@ -135,11 +139,14 @@ class RealDetector:
     @staticmethod
     def _construir_mapeo(
         prompts_por_producto: dict[str, list[str]],
-    ) -> tuple[list[tuple[int, str, str]], list[str]]:
-        mapeo: list[tuple[int, str, str]] = []
+        prompts_negativos: list[str] | None = None,
+    ) -> tuple[list[tuple[int, str | None, str]], list[str]]:
+        mapeo: list[tuple[int, str | None, str]] = []
         for producto_id, prompts in prompts_por_producto.items():
             for prompt in prompts:
                 mapeo.append((len(mapeo), producto_id, prompt))
+        for prompt in prompts_negativos or []:
+            mapeo.append((len(mapeo), None, prompt))
         prompts_planos = [entry[2] for entry in mapeo]
         assert len(prompts_planos) == len(mapeo)
         return mapeo, prompts_planos
@@ -149,7 +156,7 @@ class RealDetector:
         resultados: list[Any],
         ancho: int,
         alto: int,
-        mapeo_indice_producto: list[tuple[int, str, str]],
+        mapeo_indice_producto: list[tuple[int, str | None, str]],
     ) -> list[Deteccion]:
         detecciones: list[Deteccion] = []
         for resultado in resultados:
@@ -158,6 +165,8 @@ class RealDetector:
             cajas = RealDetector._a_lista(resultado.boxes.xyxy)
             for pos, (clase, conf) in enumerate(zip(clases, confianzas)):
                 _, producto_id, prompt = mapeo_indice_producto[int(clase)]
+                if producto_id is None:
+                    continue
                 bbox = self._a_pixeles(RealDetector._a_lista(cajas[pos]), ancho, alto)
                 detecciones.append(
                     Deteccion(

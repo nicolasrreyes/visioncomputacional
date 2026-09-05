@@ -1,0 +1,10 @@
+{
+  "estante_gaseosas.jpg": {
+    "zona": "estanteria_b",
+    "conteos": { "botella_plastica": 41 }
+  },
+  "caja_carton.jpg": {
+    "zona": "palletera",
+    "conteos": { "pallet_con_cajas": 1 }
+  }
+}

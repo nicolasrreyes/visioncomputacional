@@ -8,7 +8,7 @@ from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass, field
 from typing import Any
 
-from app.audits.service import _prompts_por_producto, guardar_auditoria_viva
+from app.audits.service import build_prompts_con_background, guardar_auditoria_viva
 from app.detection.real_inference import obtener_detector_compartido
 
 logger = logging.getLogger(__name__)
@@ -44,12 +44,13 @@ async def manejar_offer(sdp: str, zona_id: str) -> str:
 
     from app.rtc.procesador import ProcesadorVideo
 
-    prompts = _prompts_por_producto(zona_id)
+    prompts, prompts_negativos = build_prompts_con_background(zona_id)
     # Un solo modelo YOLO comparteado entre conexiones (~340 MB).
     procesador = ProcesadorVideo(
         zona_id=zona_id,
         prompts_por_producto=prompts,
         detector=obtener_detector_compartido(),
+        prompts_negativos=prompts_negativos,
     )
 
     conexion = ConexionRtc(pc=RTCPeerConnection(), procesador=procesador)

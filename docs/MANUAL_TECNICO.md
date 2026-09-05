@@ -300,6 +300,11 @@ que las falsas positivas queden bajo el umbral (→ a revisar, no a conteo).
 - **Prompts filtrados por zona**: detectan *más* objetos que todas las clases juntas
   (compiten menos clases). Ej. `estante_gaseosas`→`estanteria_b`: 41 botellas con
   prompts de zona vs 31 con vocabulario completo.
+- **Clases negativas (`prompts_background`)**: entran al softmax para mejorar precisión
+  y se filtran del output. Se miden con `evaluar.py --no-background` (comparación).
+- **Momento: no hay que asumir.** Cambios de prompts/umbrales se deciden con el harness de
+  evaluación. Ej: enriquecer el prompt de pallet degradó precision (1→2 detecciones) y se
+  revirtió; los umbrales óptimos del sweep calzan con los de config.
 - **Modelo compartido + locks**: un solo YOLO en memoria para todas las conexiones.
 - **IDs atómicos y re-asignación bajo colisión**: tolera seeds commiteadas con el repo.
 - **`fuente`**: enum; se renombró `fuentes`→`fuente` en la API (match con la internals).
@@ -311,7 +316,10 @@ que las falsas positivas queden bajo el umbral (→ a revisar, no a conteo).
 ### Agregar un producto
 1. Añadirlo a `productos_objetivo.json` (id, nombre, prompts, umbral, color).
 2. Añadir su stock esperado a `stock_esperado.csv` en las zonas correspondientes.
-3. Validar con `validar_deteccion.py` y ajustar el umbral.
+3. Validar y calibrar con el harness `scripts/evaluar.py` (formato GT en
+   `data/evaluacion/README.md`): mide P/R/F1/mAP y recomienda el umbral óptimo
+   por producto (`--sweep "0.2 0.3 0.4 0.5"`).
+4. Ajustar el umbral con el resultado y re-correr `evaluar.py`.
 
 ### Agregar una zona
 1. Añadirla a `zonas.json` (con `productos_permitidos`).
@@ -326,7 +334,8 @@ Reemplazar `DEFAULT_MODELO` en `real_inference.py` (manteniendo `detectar`/
 
 - CPU: ~1 fps de inferencia → el video procesa 1 frame/s.
 - Vocabulario cerrado a los productos definidos; cero-shot depende de la calidad de los
-  prompts y de que el objeto sea reconocible.
+  prompts (mitigado con `prompts_background` y medible con `scripts/evaluar.py`).
 - Comparación contra stock es por **cantidad**, no por posición exacta.
 - WebRTC: un cliente a la vez; `getUserMedia` exige `localhost`/HTTPS.
 - El primer arranque descarga el modelo (~340 MB).
+- El modo bbox del harness requiere anotar cajas GT; sin anotación se usa el modo conteo.

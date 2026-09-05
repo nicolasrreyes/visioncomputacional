@@ -12,7 +12,7 @@ class DetectorStub:
     def __init__(self, detecciones: list[Deteccion]) -> None:
         self.detecciones = detecciones
 
-    def detectar(self, imagen, prompts_por_producto, confianza=0.25) -> list[Deteccion]:
+    def detectar(self, imagen, prompts_por_producto, confianza=0.25, prompts_negativos=None) -> list[Deteccion]:
         return list(self.detecciones)
 
 

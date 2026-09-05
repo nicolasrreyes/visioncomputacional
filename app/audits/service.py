@@ -10,7 +10,14 @@ from app.detection.counting import contar_detecciones
 from app.detection.mock_inference import cargar_detecciones_fixture
 from app.detection.real_inference import RealDetector, obtener_detector_compartido
 from app.inventory.compare import comparar_con_stock
-from app.inventory.loader import ROOT_DIR, cargar_productos, cargar_zonas, stock_por_zona
+from app.inventory.loader import (
+    DATA_DIR,
+    ROOT_DIR,
+    cargar_productos,
+    cargar_zonas,
+    load_json,
+    stock_por_zona,
+)
 from app.inventory.schemas import Auditoria, Deteccion, FuenteAuditoria
 from app.visualization.draw import dibujar_bounding_boxes, dibujar_sobre_array
 
@@ -95,6 +102,24 @@ def _prompts_por_producto(zona_id: str) -> dict[str, list[str]]:
     }
 
 
+def _prompts_background() -> list[str]:
+    data = load_json(DATA_DIR / "productos_objetivo.json")
+    return list(data.get("prompts_background", []))
+
+
+def build_prompts_con_background(
+    zona_id: str, con_background: bool = True
+) -> tuple[dict[str, list[str]], list[str]]:
+    """Prompts de la zona + clases negativas de background.
+
+    Las negativas entran al softmax del modelo (suben precision) pero el
+    detector las filtra del output.
+    """
+    prompts = _prompts_por_producto(zona_id)
+    negativos = _prompts_background() if con_background else []
+    return prompts, negativos
+
+
 def procesar_imagen(
     zona_id: str,
     ruta_imagen: str | Path,
@@ -114,12 +139,12 @@ def procesar_imagen(
     if not ruta.exists():
         raise FileNotFoundError(f"No existe la imagen: {ruta_imagen}")
 
-    prompts = _prompts_por_producto(zona_id)
+    prompts, prompts_negativos = build_prompts_con_background(zona_id)
     if not prompts:
         raise ValueError(f"La zona {zona_id} no tiene productos para detectar.")
 
     model = detector or obtener_detector_compartido()
-    detecciones = model.detectar(ruta, prompts)
+    detecciones = model.detectar(ruta, prompts, prompts_negativos=prompts_negativos)
     duracion = time.perf_counter() - inicio
 
     repo = repository or AuditoriaRepository()

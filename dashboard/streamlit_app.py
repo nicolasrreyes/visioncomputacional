@@ -188,14 +188,18 @@ if auditorias:
     )
     detalle = _cargar_auditoria(seleccion)
 
-    evidencia = ROOT_DIR / (detalle.get("evidencia_path") or "")
+    evidencia_path = detalle.get("evidencia_path")
     col_ev, col_det = st.columns([3, 2])
     with col_ev:
         st.markdown("**Evidencia anotada**")
-        if evidencia.exists():
-            st.image(str(evidencia), caption=detalle.get("evidencia_path"), use_container_width=True)
+        if evidencia_path:
+            evidencia = ROOT_DIR / evidencia_path
+            if evidencia.is_file():
+                st.image(str(evidencia), caption=evidencia_path, use_container_width=True)
+            else:
+                st.info(f"No se encontro la evidencia: {evidencia}")
         else:
-            st.info(f"No se encontro la evidencia: {evidencia}")
+            st.info("Esta auditoria no tiene evidencia (no proviene de una imagen).")
         st.caption(f"Fuente: {detalle.get('fuente', 'imagen')}. Origen: {detalle.get('archivo_original')}")
 
     with col_det:

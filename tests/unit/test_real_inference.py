@@ -68,6 +68,52 @@ def test_detectar_sin_prompts_devuelve_vacio(tmp_path):
     assert detector.detectar(imagen, {}) == []
 
 
+def test_construir_mapeo_con_negativos_usa_sentinel():
+    mapeo, planos = RealDetector._construir_mapeo(
+        {"caja_carton_chica": ["small cardboard box"], "botella_plastica": ["plastic bottle"]},
+        prompts_negativos=["person", "shelf"],
+    )
+    assert planos == ["small cardboard box", "plastic bottle", "person", "shelf"]
+    assert [e[1] for e in mapeo] == ["caja_carton_chica", "botella_plastica", None, None]
+
+
+def test_construir_mapeo_sin_negativos_igual_que_antes():
+    mapeo, planos = RealDetector._construir_mapeo({"a": ["x"]})
+    assert planos == ["x"]
+    assert mapeo == [(0, "a", "x")]
+
+
+class FakeModelConNegativos:
+    def to(self, device):
+        return self
+
+    def set_classes(self, prompts):
+        self.prompts = prompts
+
+    def predict(self, source, conf=0.25, verbose=False):
+        boxes = FakeBoxes([0, 1, 3], [0.9, 0.8, 0.7], [[10, 10, 60, 80], [100, 20, 150, 70], [30, 40, 70, 90]])
+        return [FakeResult(boxes, (100, 200))]
+
+
+def test_detectar_filtra_indices_negativos(tmp_path):
+    imagen = tmp_path / "prueba.jpg"
+    imagen.write_bytes(b"fake")
+    detector = RealDetector(device="cpu")
+    detector._model = FakeModelConNegativos()
+
+    detecciones = detector.detectar(
+        imagen,
+        {"caja_carton_chica": ["small cardboard box"], "botella_plastica": ["plastic bottle"]},
+        confianza=0.5,
+        prompts_negativos=["person", "shelf"],
+    )
+    # indices: 0=caja, 1=botella, 2=person, 3=shelf -> se filtra el indice 3.
+    assert [d.producto_id for d in detecciones] == ["caja_carton_chica", "botella_plastica"]
+    assert detector._model.prompts == [
+        "small cardboard box", "plastic bottle", "person", "shelf",
+    ]
+
+
 def test_detectar_imagen_inexistente():
     detector = RealDetector(device="cpu")
     try:

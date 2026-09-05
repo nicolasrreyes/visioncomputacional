@@ -12,7 +12,7 @@ class DetectorStub:
         self.detecciones = detecciones
         self.ultimo_shape = None
 
-    def detectar_ndarray(self, bgr, prompts):
+    def detectar_ndarray(self, bgr, prompts, prompts_negativos=None):
         self.llamados += 1
         self.ultimo_shape = bgr.shape
         return self.detecciones

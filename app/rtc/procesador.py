@@ -55,9 +55,11 @@ class ProcesadorVideo:
         intervalo_seg: float = DEFAULT_INTERVALO_SEG,
         max_dimension: int = DEFAULT_MAX_DIMENSION,
         productos: dict[str, Producto] | None = None,
+        prompts_negativos: list[str] | None = None,
     ) -> None:
         self.zona_id = zona_id
         self.prompts = prompts_por_producto
+        self.prompts_negativos = prompts_negativos or []
         self.detector = detector or obtener_detector_compartido()
         self.intervalo_seg = intervalo_seg
         self.max_dimension = max_dimension
@@ -99,7 +101,9 @@ class ProcesadorVideo:
         self._ancho, self._alto = ancho, alto
         frame, _, _, factor = self._redimensionar(frame_rgb, ancho, alto)
         bgr = frame[:, :, ::-1].copy()
-        detecciones = self.detector.detectar_ndarray(bgr, self.prompts)
+        detecciones = self.detector.detectar_ndarray(
+            bgr, self.prompts, prompts_negativos=self.prompts_negativos
+        )
         if factor != 1.0:
             detecciones = [
                 d.model_copy(update={"bbox": [round(v / factor, 2) for v in d.bbox]})

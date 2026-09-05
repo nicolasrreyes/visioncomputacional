@@ -10,7 +10,7 @@ class DetectorEndpointStub:
     def __init__(self, modelo="", device=None, verbose=False):
         self.modelo = modelo
 
-    def detectar(self, imagen, prompts_por_producto, confianza=0.25):
+    def detectar(self, imagen, prompts_por_producto, confianza=0.25, prompts_negativos=None):
         return [
             Deteccion(producto_id="caja_carton_chica", label="small cardboard box", confianza=0.84, bbox=[10, 10, 60, 80]),
             Deteccion(producto_id="botella_plastica", label="plastic bottle", confianza=0.79, bbox=[100, 10, 160, 90]),
