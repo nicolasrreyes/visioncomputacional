@@ -104,12 +104,16 @@ class Auditoria(BaseModel):
         conteos: dict[str, int],
         discrepancias: list[Discrepancia],
         metricas: MetricasAuditoria,
+        archivo_original: str | None = None,
+        evidencia_path: str | None = None,
     ) -> "Auditoria":
         return cls(
             auditoria_id=auditoria_id,
             fecha_hora=datetime.now(timezone.utc).isoformat(),
             zona_id=zona_id,
             fuente=fuente,
+            archivo_original=archivo_original,
+            evidencia_path=evidencia_path,
             duracion_proceso_segundos=duracion_proceso_segundos,
             detecciones=detecciones,
             conteos=conteos,

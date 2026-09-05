@@ -3,3 +3,8 @@ uvicorn
 pydantic
 pytest
 streamlit>=1.63.0
+python-multipart
+pillow
+numpy
+ultralytics
+aiortc

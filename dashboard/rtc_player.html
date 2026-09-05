@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Auditoria en vivo (RTC)</title>
+<style>
+  :root { --accent:#4ECDC4; }
+  * { box-sizing:border-box; }
+  body { font-family:system-ui, Segoe UI, Roboto, sans-serif; margin:0; padding:1rem; background:#0e1117; color:#e6e6e6; }
+  h2 { margin-top:0; font-size:1.1rem; }
+  .toolbar { display:flex; gap:.5rem; align-items:center; flex-wrap:wrap; margin-bottom:.75rem; }
+  button { padding:.45rem .9rem; border-radius:.4rem; border:1px solid var(--accent); background:var(--accent); color:#06222c; font-weight:600; cursor:pointer; }
+  button:disabled { opacity:.45; cursor:not-allowed; }
+  button.secondary { background:transparent; color:var(--accent); }
+  select { padding:.4rem; border-radius:.4rem; background:#1f2937; color:#e6e6e6; border:1px solid #374151; }
+  .stage { position:relative; width:100%; max-width:960px; margin:0 auto; line-height:0; border-radius:.5rem; overflow:hidden; background:#000; }
+  video, canvas { width:100%; height:auto; }
+  canvas { position:absolute; inset:0; pointer-events:none; }
+  .panel { max-width:960px; margin:1rem auto 0; }
+  #estado { font-size:.85rem; color:#9ca3af; margin-bottom:.5rem; }
+  #aviso { display:none; border-radius:.4rem; padding:.7rem 1rem; margin-bottom:.75rem; font-size:.9rem; }
+  #aviso.error { background:#7f1d1d; border:1px solid #b91c1c; }
+  #aviso.warn { background:#78350f; border:1px solid #b45309; }
+  table { border-collapse:collapse; width:100%; max-width:480px; font-size:.9rem; }
+  th, td { border:1px solid #374151; padding:.35rem .6rem; text-align:left; }
+  th { background:#1f2937; }
+  .vacio { color:#6b7280; font-size:.85rem; }
+</style>
+</head>
+<body>
+<h2>Auditoria en vivo (WebRTC)</h2>
+<div class="toolbar">
+  <select id="zona"></select>
+  <button id="iniciar">Iniciar camara</button>
+  <button id="detener" class="secondary" disabled>Detener y guardar</button>
+</div>
+<div id="aviso"></div>
+<div class="stage">
+  <video id="video" autoplay muted playsinline></video>
+  <canvas id="canvas"></canvas>
+</div>
+<div class="panel">
+  <div id="estado">Sin conexion.</div>
+  <div id="conteos">
+    <div class="vacio">Aun no hay detecciones.</div>
+  </div>
+  <p class="vacio">Si la camara no se enciende o la conexion se corta, usa la carga manual
+  de imagen/foto en el panel principal como respaldo.</p>
+</div>
+
+<script>
+"use strict";
+
+const API = window.location.origin;
+const video = document.getElementById("video");
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+const zonaSel = document.getElementById("zona");
+const estado = document.getElementById("estado");
+const aviso = document.getElementById("aviso");
+const conteosContainer = document.getElementById("conteos");
+const btnIniciar = document.getElementById("iniciar");
+const btnDetener = document.getElementById("detener");
+
+let pc = null;
+let dc = null;
+let streamLocal = null;
+let ultimoPayload = null;
+let animId = 0;
+let framesProcesados = 0;
+let cerrando = false;
+
+function mostrarAviso(tipo, texto) {
+  aviso.className = tipo;
+  aviso.textContent = texto;
+  aviso.style.display = "block";
+}
+function ocultarAviso() {
+  aviso.style.display = "none";
+}
+
+async function cargarZonas() {
+  try {
+    const res = await fetch(API + "/zonas");
+    const zonas = await res.json();
+    const params = new URLSearchParams(window.location.search);
+    const preseleccion = params.get("zona_id");
+    zonaSel.innerHTML = "";
+    for (const zona of zonas) {
+      const op = document.createElement("option");
+      op.value = zona.id;
+      op.textContent = zona.nombre + " (" + zona.id + ")";
+      zonaSel.appendChild(op);
+    }
+    if (preseleccion && zonas.some((z) => z.id === preseleccion)) zonaSel.value = preseleccion;
+  } catch (err) {
+    mostrarAviso("error", "No se pudo cargar las zonas: " + err.message + ". Revisa que el backend este corriendo.");
+  }
+}
+
+function reportarEstado(texto) {
+  estado.textContent = texto;
+}
+
+function actualizarConteos(payload) {
+  const porProducto = {};
+  const colores = {};
+  for (const det of payload.detecciones) {
+    porProducto[det.producto_id] = (porProducto[det.producto_id] || 0) + 1;
+    colores[det.producto_id] = det.color_bbox || "#4ECDC4";
+    colores[det.producto_id + "|nombre"] = det.nombre || det.producto_id;
+  }
+  const filas = Object.entries(porProducto)
+    .sort((a, b) => b[1] - a[1])
+    .map(([id, n]) =>
+      `<tr><td><span style="display:inline-block;width:.7em;height:.7em;border-radius:2px;background:${colores[id]};margin-right:.4em;"></span>${colores[id + "|nombre"] || id}</td><td>${n}</td></tr>`
+    )
+    .join("");
+  conteosContainer.innerHTML =
+    `<table><tr><th>Producto</th><th>Detectados (ultimo frame)</th></tr>${filas}</table>` +
+    `<div class="vacio">Frames procesados: ${framesProcesados}</div>`;
+}
+
+function dibujar() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  const vw = video.videoWidth || 0;
+  const vh = video.videoHeight || 0;
+  if (canvas.width !== vw || canvas.height !== vh) {
+    canvas.width = vw;
+    canvas.height = vh;
+  }
+  const p = ultimoPayload;
+  if (p && vw > 0 && vh > 0) {
+    const sx = (x) => (x / (p.ancho || vw)) * vw;
+    const sy = (y) => (y / (p.alto || vh)) * vh;
+    for (const det of p.detecciones) {
+      const [x1, y1, x2, y2] = det.bbox;
+      const rx = sx(x1), ry = sy(y1), rw = sx(x2) - sx(x1), rh = sy(y2) - sy(y1);
+      const color = det.color_bbox || "#4ECDC4";
+      ctx.strokeStyle = color;
+      ctx.lineWidth = Math.max(2, vw / 400);
+      ctx.strokeRect(rx, ry, rw, rh);
+      const etiqueta = (det.nombre || det.label) + " " + Math.round(det.confianza * 100) + "%";
+      ctx.font = Math.max(12, vw / 45) + "px system-ui";
+      const tw = ctx.measureText(etiqueta).width;
+      ctx.fillStyle = color;
+      ctx.fillRect(rx, ry - (vw / 45 + 4), tw + 6, vw / 45 + 4);
+      ctx.fillStyle = "#06222c";
+      ctx.fillText(etiqueta, rx + 3, ry - 3);
+    }
+  }
+  animId = requestAnimationFrame(dibujar);
+}
+
+function detener(tieneGuardado) {
+  cancelAnimationFrame(animId);
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ultimoPayload = null;
+  if (dc && dc.readyState === "open") {
+    try { dc.send("detener"); } catch (err) { /* la conexion ya se cerro */ }
+  }
+  if (streamLocal) {
+    for (const track of streamLocal.getTracks()) track.stop();
+    streamLocal = null;
+  }
+  if (dc) { try { dc.close(); } catch (err) {} dc = null; }
+  if (pc) { try { pc.close(); } catch (err) {} pc = null; }
+  video.srcObject = null;
+  btnIniciar.disabled = false;
+  btnDetener.disabled = true;
+  cerrando = false;
+  if (tieneGuardado) {
+    reportarEstado("Conexion cerrada. Resumen y evidencia guardados (revisa el dashboard).");
+    ocultarAviso();
+  } else {
+    reportarEstado("Conexion cerrada sin detecciones guardadas.");
+  }
+  framesProcesados = 0;
+}
+
+function detenerYGuardar() {
+  if (cerrando) return;
+  cerrando = true;
+  btnDetener.disabled = true;
+  reportarEstado("Guardando snapshot... espera el aviso del backend.");
+  if (dc && dc.readyState === "open") {
+    try { dc.send("detener"); } catch (err) { /* noop */ }
+  }
+  // Si el backend no confirma en 4s, cerrar igual (la deteccion ya se guardo o expiro).
+  setTimeout(() => {
+    if (cerrando) detener(false);
+  }, 4000);
+}
+
+async function iniciar() {
+  ocultarAviso();
+  btnIniciar.disabled = true;
+  try {
+    streamLocal = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+  } catch (err) {
+    btnIniciar.disabled = false;
+    mostrarAviso("warn",
+      "No se pudo acceder a la camara (" + err.name + "). Verifica permisos del navegador o usa la carga manual de imagen como respaldo.");
+    return;
+  }
+  video.srcObject = streamLocal;
+  await video.play().catch(() => {});
+  const vw = video.videoWidth || 640;
+  const vh = video.videoHeight || 480;
+  canvas.width = vw;
+  canvas.height = vh;
+
+  pc = new RTCPeerConnection();
+  dc = pc.createDataChannel("detecciones");
+  dc.onopen = () => reportarEstado("Conectado. Procesando video (1 deteccion por segundo aprox)...");
+  dc.onmessage = (ev) => {
+    try {
+      const p = JSON.parse(ev.data);
+      if (p.tipo === "guardado") {
+        reportarEstado("Auditoria guardada por el backend. Cerrando...");
+        detener(true);
+        return;
+      }
+      ultimoPayload = p;
+      framesProcesados += 1;
+      actualizarConteos(p);
+      reportarEstado("Conectado. Ultimo frame: " + p.detecciones.length +
+        " detecciones (" + p.timestamp.split("T")[1] + ").");
+    } catch (err) {
+      reportarEstado("Mensaje invalido: " + ev.data);
+    }
+  };
+  dc.onclose = () => reportarEstado("Canal de datos cerrado.");
+  pc.onconnectionstatechange = () => {
+    const st = pc.connectionState;
+    reportarEstado("Estado RTC: " + st + ".");
+    if (st === "failed" || st === "closed") detener(false);
+  };
+
+  try {
+    const offer = await pc.createOffer();
+    await pc.setLocalDescription(offer);
+    const res = await fetch(API + "/rtc/offer", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ sdp: pc.localDescription.sdp, zona_id: zonaSel.value }),
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      throw new Error((data && data.detail) || "HTTP " + res.status);
+    }
+    await pc.setRemoteDescription({ type: data.type, sdp: data.sdp });
+  } catch (err) {
+    detener(false);
+    mostrarAviso("error",
+      "Fallo la conexion con el backend: " + err.message + ". Usa la carga manual de imagen como respaldo.");
+    return;
+  }
+  btnDetener.disabled = false;
+  animId = requestAnimationFrame(dibujar);
+}
+
+btnIniciar.addEventListener("click", iniciar);
+btnDetener.addEventListener("click", detenerYGuardar);
+cargarZonas();
+</script>
+</body>
+</html>

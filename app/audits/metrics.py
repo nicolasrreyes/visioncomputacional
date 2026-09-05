@@ -26,6 +26,7 @@ def calcular_metricas(
     )
     tiempo_manual_estimado_min = total_esperado * 0.25
     tiempo_ia_estimado_min = duracion_proceso_segundos / 60
+    tiempo_ahorrado = max(0.0, tiempo_manual_estimado_min - tiempo_ia_estimado_min)
 
     return MetricasAuditoria(
         total_esperado=total_esperado,
@@ -34,8 +35,8 @@ def calcular_metricas(
         cantidad_discrepancias=cantidad_discrepancias,
         porcentaje_coincidencia=round(porcentaje_coincidencia, 2),
         confianza_promedio=round(confianza_promedio, 4),
-        items_a_revisar=len(detecciones_a_revisar),
-        tiempo_ahorrado_minutos=round(tiempo_manual_estimado_min - tiempo_ia_estimado_min, 2),
+        items_a_revisar=len({d.producto_id for d in detecciones_a_revisar}),
+        tiempo_ahorrado_minutos=round(tiempo_ahorrado, 2),
     )
 
 

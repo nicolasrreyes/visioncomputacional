@@ -49,21 +49,21 @@ Frontend WebRTC: JavaScript nativo (RTCPeerConnection, getUserMedia) — no requ
 Signaling: HTTP simple (un endpoint POST que intercambia SDP offer/answer), sin necesidad de servidor de signaling dedicado (ej. no hace falta Socket.IO) dado que es un POC de una sola sesión a la vez.
 Overlay de resultados: <canvas> HTML sincronizado con el <video>, actualizado desde el DataChannel.
 Tareas para OpenCode (checklist de implementación)
- Instalar y configurar aiortc en el backend FastAPI existente.
- Crear endpoint POST /rtc/offer que reciba la SDP offer del navegador y devuelva la SDP answer.
- Implementar una clase VideoTransformTrack (heredando de MediaStreamTrack de aiortc) que:
-Reciba frames del track de video entrante.
-Aplique throttling (procesar 1 de cada N frames, configurable).
-Corra el modelo de detección zero-shot ya existente en el proyecto (reutilizar la función de inferencia actual, no reescribirla).
-Devuelva el frame (con o sin overlay dibujado del lado del backend, a definir).
- Implementar el envío de resultados de detección por RTCDataChannel en formato JSON: { "detecciones": [{ "clase": str, "confianza": float, "bbox": [x,y,w,h] }], "timestamp": str }.
- Crear página HTML simple (puede estar embebida vía st.components.v1.html en Streamlit) con:
-Botón "Iniciar cámara" / "Detener".
-<video> mostrando el stream local.
-<canvas> superpuesto dibujando los bounding boxes recibidos por el DataChannel.
-Contador en pantalla de detecciones por clase.
- Al detener la captura, guardar en la base de datos (conteos_detectados) un resumen de las detecciones acumuladas junto con al menos un snapshot de evidencia (frame con overlay).
- Manejar el caso de error/desconexión: si la cámara falla o la conexión RTC se corta, mostrar mensaje claro y permitir volver al flujo de carga de foto/video como respaldo.
+- [x]  Instalar y configurar aiortc en el backend FastAPI existente.
+- [x]  Crear endpoint POST /rtc/offer que reciba la SDP offer del navegador y devuelva la SDP answer.
+- [x]  Implementar una clase VideoTransformTrack (heredando de MediaStreamTrack de aiortc) que:
+  - [x] Reciba frames del track de video entrante.
+  - [x] Aplique throttling (procesar 1 de cada N frames, configurable).
+  - [x] Corra el modelo de deteccion zero-shot ya existente en el proyecto (reutilizar la funcion de inferencia actual, no reescribirla).
+  - [x] Devuelva el frame (con o sin overlay dibujado del lado del backend, a definir).
+- [x]  Implementar el envío de resultados de detección por RTCDataChannel en formato JSON: { "detecciones": [{ "clase": str, "confianza": float, "bbox": [x,y,w,h] }], "timestamp": str }.
+- [x]  Crear página HTML simple (puede estar embebida vía st.components.v1.html en Streamlit) con:
+  - [x] Botón "Iniciar cámara" / "Detener".
+  - [x] <video> mostrando el stream local.
+  - [x] <canvas> superpuesto dibujando los bounding boxes recibidos por el DataChannel.
+  - [x] Contador en pantalla de detecciones por clase.
+- [x]  Al detener la captura, guardar en la base de datos (conteos_detectados) un resumen de las detecciones acumuladas junto con al menos un snapshot de evidencia (frame con overlay).
+- [x]  Manejar el caso de error/desconexión: si la cámara falla o la conexión RTC se corta, mostrar mensaje claro y permitir volver al flujo de carga de foto/video como respaldo.
 Criterios de aceptación
 Al presionar "Iniciar cámara", el navegador pide permiso y muestra el video en menos de 3 segundos.
 Las detecciones aparecen superpuestas sobre el video en un lapso razonable (no necesita ser 30fps; con 1-2 detecciones por segundo es suficiente para la demo).

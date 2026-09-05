@@ -1,5 +1,6 @@
 from fastapi.testclient import TestClient
 
+from app.audits.repository import AuditoriaRepository
 from app.api.main import app
 
 
@@ -23,7 +24,15 @@ def test_stock_por_zona():
     assert len(response.json()) >= 1
 
 
-def test_simular_auditoria():
+def test_simular_auditoria(tmp_path, monkeypatch):
+    repo = AuditoriaRepository(tmp_path / "auditorias")
+
+    def _simular(zona_id, fixture, fuente="imagen"):
+        from app.audits.service import simular_auditoria
+
+        return simular_auditoria(zona_id=zona_id, fixture=fixture, fuente=fuente, repository=repo)
+
+    monkeypatch.setattr("app.api.routes_detection.simular_auditoria", _simular)
     response = client.post(
         "/auditorias/simular",
         json={

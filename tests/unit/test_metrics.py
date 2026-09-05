@@ -37,3 +37,23 @@ def test_porcentaje_historico_discrepancias():
     ]
     assert porcentaje_auditorias_con_discrepancias(auditorias) == 50
 
+
+def test_tiempo_ahorrado_nunca_negativo():
+    from app.inventory.schemas import Deteccion
+
+    # duracion enorme (> 26*0.25 min) -> el ahorro se clampa a 0
+    metricas = calcular_metricas([], [], [], duracion_proceso_segundos=60 * 60)
+    assert metricas.tiempo_ahorrado_minutos >= 0
+
+
+def test_items_a_revisar_cuenta_productos_unicos():
+    from app.inventory.schemas import Deteccion
+
+    revisar = [
+        Deteccion(producto_id="botella_plastica", label="a", confianza=0.2, bbox=[0, 0, 1, 1]),
+        Deteccion(producto_id="botella_plastica", label="b", confianza=0.19, bbox=[1, 1, 2, 2]),
+        Deteccion(producto_id="caja_carton_chica", label="c", confianza=0.3, bbox=[0, 0, 1, 1]),
+    ]
+    metricas = calcular_metricas([], [], revisar, 1)
+    assert metricas.items_a_revisar == 2
+

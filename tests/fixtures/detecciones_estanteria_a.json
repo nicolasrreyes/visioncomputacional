@@ -3,114 +3,114 @@
     "producto_id": "caja_carton_chica",
     "label": "caja carton chica",
     "confianza": 0.87,
-    "bbox": [50, 40, 180, 160]
+    "bbox": [60, 60, 160, 180]
   },
   {
     "producto_id": "caja_carton_chica",
     "label": "caja carton chica",
     "confianza": 0.82,
-    "bbox": [210, 45, 340, 170]
+    "bbox": [190, 65, 290, 185]
   },
   {
     "producto_id": "caja_carton_chica",
     "label": "caja carton chica",
     "confianza": 0.79,
-    "bbox": [370, 50, 490, 175]
+    "bbox": [320, 60, 420, 180]
   },
   {
     "producto_id": "caja_carton_chica",
     "label": "caja carton chica",
     "confianza": 0.85,
-    "bbox": [50, 200, 160, 330]
+    "bbox": [450, 65, 550, 185]
   },
   {
     "producto_id": "caja_carton_chica",
     "label": "caja carton chica",
     "confianza": 0.81,
-    "bbox": [200, 200, 310, 330]
+    "bbox": [60, 210, 160, 330]
   },
   {
     "producto_id": "caja_carton_chica",
     "label": "caja carton chica",
     "confianza": 0.88,
-    "bbox": [350, 200, 460, 330]
+    "bbox": [190, 215, 290, 335]
   },
   {
     "producto_id": "caja_carton_chica",
     "label": "caja carton chica",
     "confianza": 0.84,
-    "bbox": [500, 200, 610, 330]
+    "bbox": [320, 210, 420, 330]
   },
   {
     "producto_id": "caja_carton_chica",
     "label": "caja carton chica",
     "confianza": 0.86,
-    "bbox": [50, 400, 160, 530]
+    "bbox": [450, 215, 550, 335]
   },
   {
     "producto_id": "botella_plastica",
     "label": "botella plastica",
     "confianza": 0.75,
-    "bbox": [380, 90, 430, 220]
+    "bbox": [60, 400, 110, 520]
   },
   {
     "producto_id": "botella_plastica",
     "label": "botella plastica",
     "confianza": 0.78,
-    "bbox": [450, 95, 500, 225]
+    "bbox": [130, 405, 180, 525]
   },
   {
     "producto_id": "botella_plastica",
     "label": "botella plastica",
     "confianza": 0.72,
-    "bbox": [50, 350, 100, 480]
+    "bbox": [200, 400, 250, 520]
   },
   {
     "producto_id": "botella_plastica",
     "label": "botella plastica",
     "confianza": 0.80,
-    "bbox": [120, 355, 170, 485]
+    "bbox": [270, 405, 320, 525]
   },
   {
     "producto_id": "botella_plastica",
     "label": "botella plastica",
     "confianza": 0.76,
-    "bbox": [190, 350, 240, 480]
+    "bbox": [340, 400, 390, 520]
   },
   {
     "producto_id": "botella_plastica",
     "label": "botella plastica",
     "confianza": 0.74,
-    "bbox": [260, 355, 310, 485]
+    "bbox": [410, 405, 460, 525]
   },
   {
     "producto_id": "botella_plastica",
     "label": "botella plastica",
     "confianza": 0.79,
-    "bbox": [330, 350, 380, 480]
+    "bbox": [60, 540, 110, 660]
   },
   {
     "producto_id": "botella_plastica",
     "label": "botella plastica",
     "confianza": 0.77,
-    "bbox": [400, 355, 450, 485]
+    "bbox": [130, 545, 180, 665]
   },
   {
     "producto_id": "botella_plastica",
     "label": "botella plastica",
     "confianza": 0.81,
-    "bbox": [470, 350, 520, 480]
+    "bbox": [200, 540, 250, 660]
   },
   {
     "producto_id": "botella_plastica",
     "label": "botella plastica",
     "confianza": 0.73,
-    "bbox": [540, 355, 590, 485]
+    "bbox": [270, 545, 320, 665]
   },
   {
     "producto_id": "botella_plastica",
     "label": "botella plastica",
     "confianza": 0.75,
-    "bbox": [610, 350, 660, 480]
+    "bbox": [340, 540, 390, 660]
   }
 ]

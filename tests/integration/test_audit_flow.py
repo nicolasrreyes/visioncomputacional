@@ -20,7 +20,7 @@ def test_flujo_con_baja_confianza(tmp_path):
         "detecciones_con_baja_confianza.json",
         repository=AuditoriaRepository(tmp_path),
     )
-    assert auditoria.metricas.items_a_revisar == 5
+    assert auditoria.metricas.items_a_revisar == 3  # 5 detecciones de baja confianza, 3 productos unicos
     assert any(item.requiere_revision for item in auditoria.discrepancias)
 
 

@@ -1,10 +1,8 @@
-zona_id,producto_id,cantidad_esperada,ubicacion_exacta,fecha_ultimo_recuento,notas
+﻿zona_id,producto_id,cantidad_esperada,ubicacion_exacta,fecha_ultimo_recuento,notas
 estanteria_a,caja_carton_chica,8,estante_superior_izq,2026-08-28,Stock inicial verificado
 estanteria_a,botella_plastica,12,estante_medio,2026-08-28,Almacenado en cajas
 estanteria_a,lata_metalica,6,estante_inferior,2026-08-28,Productos empaquetados
-estanteria_b,caja_carton_grande,5,estante_superior,2026-08-28,Cajas reforzadas
-estanteria_b,paquete_flexible,15,estante_medio_der,2026-08-28,Multipack
-estanteria_b,bidon_plastico,3,estante_inferior,2026-08-28,Productos químicos
+estanteria_b,botella_plastica,40,estante_medio,2026-09-01,Bebidas gaseosas
 mesa_recepcion,caja_carton_chica,4,mostrador_izq,2026-08-29,En proceso de clasificacion
 mesa_recepcion,botella_plastica,10,mostrador_centro,2026-08-29,Lote 2026-09-01
 zona_despacho,caja_carton_grande,7,pallet_1,2026-08-29,Listos para envío

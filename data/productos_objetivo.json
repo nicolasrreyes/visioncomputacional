@@ -1,4 +1,4 @@
-{
+﻿{
   "productos_objetivo": [
     {
       "id": "caja_carton_chica",
@@ -9,7 +9,7 @@
         "small brown carton box",
         "caja de cartón pequeña"
       ],
-      "umbral_confianza": 0.65,
+      "umbral_confianza": 0.6,
       "color_bbox": "#FF6B6B",
       "peso_aproximado_kg": 0.3,
       "altura_tipica_cm": 10
@@ -23,7 +23,7 @@
         "large brown carton",
         "caja de cartón grande"
       ],
-      "umbral_confianza": 0.68,
+      "umbral_confianza": 0.28,
       "color_bbox": "#D4A574",
       "peso_aproximado_kg": 0.8,
       "altura_tipica_cm": 25
@@ -37,7 +37,7 @@
         "transparent plastic container",
         "botella plástica transparente"
       ],
-      "umbral_confianza": 0.70,
+      "umbral_confianza": 0.3,
       "color_bbox": "#4ECDC4",
       "peso_aproximado_kg": 0.2,
       "altura_tipica_cm": 25
@@ -52,7 +52,7 @@
         "beverage can",
         "lata metálica"
       ],
-      "umbral_confianza": 0.72,
+      "umbral_confianza": 0.38,
       "color_bbox": "#FFE66D",
       "peso_aproximado_kg": 0.35,
       "altura_tipica_cm": 12
@@ -67,7 +67,7 @@
         "plastic pouch",
         "paquete flexible"
       ],
-      "umbral_confianza": 0.63,
+      "umbral_confianza": 0.4,
       "color_bbox": "#95E1D3",
       "peso_aproximado_kg": 0.15,
       "altura_tipica_cm": 18
@@ -82,7 +82,7 @@
         "large plastic jug",
         "bidón plástico"
       ],
-      "umbral_confianza": 0.70,
+      "umbral_confianza": 0.4,
       "color_bbox": "#C7CEEA",
       "peso_aproximado_kg": 2.5,
       "altura_tipica_cm": 35
@@ -97,19 +97,19 @@
         "stacked boxes on pallet",
         "pallet con cajas"
       ],
-      "umbral_confianza": 0.75,
+      "umbral_confianza": 0.3,
       "color_bbox": "#FFB4C2",
       "peso_aproximado_kg": 50,
       "altura_tipica_cm": 140
     }
   ],
   "reglas_conteo": {
-    "solapamiento_maximo": 0.15,
+    "solapamiento_maximo": 0.7,
     "frames_para_consolidar": 5,
     "minimo_detecciones_confirmadas": 2
   },
   "metadata": {
-    "version": "1.0",
+    "version": "1.1",
     "fecha_creacion": "2026-09-01",
     "fase": "POC",
     "modelo_recomendado": "Grounding DINO"

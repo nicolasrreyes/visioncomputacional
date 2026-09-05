@@ -5,3 +5,10 @@ __pycache__/
 venv/
 env/
 .env
+inputs/
+outputs/evidencia/
+outputs/imagenes_prueba/
+outputs/tmp_upload/
+*.pt
+weights/
+data/demo_images/*.jpg
