@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import asyncio
 import json
+import logging
 import time
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass, field
@@ -9,6 +10,8 @@ from typing import Any
 
 from app.audits.service import _prompts_por_producto, guardar_auditoria_viva
 from app.detection.real_inference import obtener_detector_compartido
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass
@@ -57,6 +60,7 @@ async def manejar_offer(sdp: str, zona_id: str) -> str:
             try:
                 frame = await track.recv()
             except Exception:
+                logger.exception("Error recibiendo frame del track; se corta el consumo")
                 break
             rgb = frame.to_ndarray(format="rgb24")
             alto, ancho = rgb.shape[:2]
@@ -106,9 +110,10 @@ async def manejar_offer(sdp: str, zona_id: str) -> str:
             try:
                 await conexion.pc.close()
             except Exception:
-                pass
+                logger.warning("Error cerrando PeerConnection en limpieza (estado: %s)", conexion.pc.connectionState)
             conexion.cerrar()
             CONEXIONES.pop(id(conexion.pc), None)
+            logger.info("Conexion RTC limpiada (id=%d)", id(conexion.pc))
 
     try:
         await conexion.pc.setRemoteDescription(RTCSessionDescription(sdp=sdp, type="offer"))
@@ -119,7 +124,7 @@ async def manejar_offer(sdp: str, zona_id: str) -> str:
         try:
             await conexion.pc.close()
         except Exception:
-            pass
+            logger.warning("Error cerrando PeerConnection tras fallo en el offer")
         conexion.cerrar()
         CONEXIONES.pop(id(conexion.pc), None)
         raise

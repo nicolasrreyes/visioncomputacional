@@ -4,12 +4,13 @@ import time
 from datetime import datetime, timezone
 from typing import Any
 
+from app.config import settings
 from app.detection.real_inference import RealDetector
 from app.inventory.loader import cargar_productos
 from app.inventory.schemas import Deteccion, Producto
 
-DEFAULT_INTERVALO_SEG = 1.0
-DEFAULT_MAX_DIMENSION = 640
+DEFAULT_INTERVALO_SEG = settings.rtc_intervalo_seg
+DEFAULT_MAX_DIMENSION = settings.rtc_max_dimension
 
 
 def build_payload(
@@ -66,7 +67,6 @@ class ProcesadorVideo:
         self.ultimo_frame_rgb: Any | None = None
         self._ancho = 0
         self._alto = 0
-        self.productos: dict[str, Producto] = productos
 
     @property
     def ultimas_dimensiones(self) -> tuple[int, int]:

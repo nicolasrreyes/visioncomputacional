@@ -17,6 +17,11 @@ class RtcOfferRequest(BaseModel):
     zona_id: str = Field(max_length=50)
 
 
+class RtcOfferResponse(BaseModel):
+    sdp: str
+    type: str
+
+
 @router.get("/rtc")
 def vista_rtc() -> FileResponse:
     """Pagina del reproductor de video en vivo (camera -> deteccion -> overlay).
@@ -31,8 +36,8 @@ def vista_rtc() -> FileResponse:
     )
 
 
-@router.post("/rtc/offer")
-async def rtc_offer(request: RtcOfferRequest) -> dict:
+@router.post("/rtc/offer", response_model=RtcOfferResponse)
+async def rtc_offer(request: RtcOfferRequest) -> RtcOfferResponse:
     try:
         import aiortc  # noqa: F401
 
@@ -45,5 +50,5 @@ async def rtc_offer(request: RtcOfferRequest) -> dict:
     try:
         sdp = await manejar_offer(request.sdp, request.zona_id)
     except ValueError as exc:
-        raise HTTPException(status_code=400, detail=str(exc))
-    return {"sdp": sdp, "type": "answer"}
+        raise HTTPException(status_code=400, detail=f"Error en signaling RTC: {exc}") from exc
+    return RtcOfferResponse(sdp=sdp, type="answer")

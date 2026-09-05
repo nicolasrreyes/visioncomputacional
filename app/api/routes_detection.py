@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import shutil
 import tempfile
 from pathlib import Path
 
@@ -7,42 +8,61 @@ from fastapi import APIRouter, File, Form, HTTPException, UploadFile
 
 from app.audits.repository import AuditoriaRepository
 from app.audits.service import procesar_imagen, simular_auditoria
-from app.detection.real_inference import ModeloNoDisponibleError
+from app.config import settings
+from app.detection.real_inference import ModeloNoDisponibleError, _DETECTOR_COMPARTIDO
 from app.inventory.loader import cargar_productos, cargar_zonas, stock_por_zona
-from app.inventory.schemas import FuenteAuditoria, SimularAuditoriaRequest, model_to_dict
+from app.inventory.schemas import (
+    Auditoria,
+    FuenteAuditoria,
+    Producto,
+    SimularAuditoriaRequest,
+    StockEsperado,
+    Zona,
+)
 
 
 router = APIRouter()
 
-MAX_UPLOAD_BYTES = 10 * 1024 * 1024
+MAX_UPLOAD_BYTES = settings.max_upload_mb * 1024 * 1024
 
 
 @router.get("/health")
-def health() -> dict[str, str]:
-    return {"status": "ok"}
+def health() -> dict[str, object]:
+    modelo_cargado = False
+    if _DETECTOR_COMPARTIDO is not None and _DETECTOR_COMPARTIDO._model is not None:
+        modelo_cargado = True
+    zonas = len(cargar_zonas())
+    auditorias = len(AuditoriaRepository().listar())
+    return {
+        "status": "ok",
+        "modelo_cargado": modelo_cargado,
+        "zonas": zonas,
+        "auditorias_guardadas": auditorias,
+        "disco_libre_bytes": shutil.disk_usage(".").free,
+    }
 
 
-@router.get("/zonas")
-def zonas() -> list[dict]:
-    return [model_to_dict(zona) for zona in cargar_zonas().values()]
+@router.get("/zonas", response_model=list[Zona])
+def zonas() -> list[Zona]:
+    return list(cargar_zonas().values())
 
 
-@router.get("/productos")
-def productos() -> list[dict]:
-    return [model_to_dict(producto) for producto in cargar_productos().values()]
+@router.get("/productos", response_model=list[Producto])
+def productos() -> list[Producto]:
+    return list(cargar_productos().values())
 
 
-@router.get("/stock/{zona_id}")
-def stock(zona_id: str) -> list[dict]:
+@router.get("/stock/{zona_id}", response_model=list[StockEsperado])
+def stock(zona_id: str) -> list[StockEsperado]:
     if zona_id not in cargar_zonas():
         raise HTTPException(status_code=404, detail=f"Zona desconocida: {zona_id}")
-    return [model_to_dict(item) for item in stock_por_zona(zona_id)]
+    return stock_por_zona(zona_id)
 
 
-@router.post("/auditorias/simular")
-def simular(request: SimularAuditoriaRequest) -> dict:
+@router.post("/auditorias/simular", response_model=Auditoria)
+def simular(request: SimularAuditoriaRequest) -> Auditoria:
     try:
-        auditoria = simular_auditoria(
+        return simular_auditoria(
             zona_id=request.zona_id,
             fixture=request.fixture,
             fuente=request.fuente,
@@ -51,15 +71,14 @@ def simular(request: SimularAuditoriaRequest) -> dict:
         raise HTTPException(status_code=404, detail=str(exc)) from exc
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
-    return model_to_dict(auditoria)
 
 
-@router.post("/auditorias/imagen")
+@router.post("/auditorias/imagen", response_model=Auditoria)
 def auditoria_desde_imagen(
     zona_id: str = Form(...),
     fuente: FuenteAuditoria = Form(FuenteAuditoria.IMAGEN),
     archivo: UploadFile = File(...),
-) -> dict:
+) -> Auditoria:
     if zona_id not in cargar_zonas():
         raise HTTPException(status_code=400, detail=f"Zona desconocida: {zona_id}")
     if not archivo.content_type or not archivo.content_type.startswith("image/"):
@@ -93,20 +112,20 @@ def auditoria_desde_imagen(
         raise HTTPException(status_code=503, detail=str(exc)) from exc
     finally:
         ruta_temporal.unlink(missing_ok=True)
-    return model_to_dict(auditoria)
+    return auditoria
 
 
-@router.get("/auditorias")
-def listar_auditorias(zona_id: str | None = None) -> list[dict]:
+@router.get("/auditorias", response_model=list[Auditoria])
+def listar_auditorias(zona_id: str | None = None) -> list[Auditoria]:
     repo = AuditoriaRepository()
-    return [model_to_dict(auditoria) for auditoria in repo.listar(zona_id=zona_id)]
+    return repo.listar(zona_id=zona_id)
 
 
-@router.get("/auditorias/{auditoria_id}")
-def obtener_auditoria(auditoria_id: str) -> dict:
+@router.get("/auditorias/{auditoria_id}", response_model=Auditoria)
+def obtener_auditoria(auditoria_id: str) -> Auditoria:
     repo = AuditoriaRepository()
     try:
-        return model_to_dict(repo.cargar(auditoria_id))
+        return repo.cargar(auditoria_id)
     except FileNotFoundError as exc:
         raise HTTPException(status_code=404, detail=str(exc)) from exc
 

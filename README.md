@@ -113,6 +113,10 @@ Guion de la demo paso a paso: [docs/DEMO.md](docs/DEMO.md).
   dashboard, conteo con fotos propias, camara (PC/celular) y resolucion de problemas.
 - [Manual tecnico](docs/MANUAL_TECNICO.md): arquitectura, modulos, API, NMS/metricas,
   WebRTC, tests y guia de extension/afinado.
+- [Arquitectura](docs/ARQUITECTURA.md): diagramas de componentes y flujo, decisiones
+  clave y camino de escalamiento (para presentar ante jurado/cliente).
+- [Manual técnico para presentación](docs/MANUAL_TECNICO_PRESENTACION.md): resumen
+  ejecutivo técnico con qué se construyó, cómo y por qué, para proyectar ante el jurado.
 - [Guion de demo](docs/DEMO.md): paso a paso de presentacion con numeros esperados.
 
 El dashboard permite:

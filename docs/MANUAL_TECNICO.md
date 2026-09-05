@@ -14,6 +14,8 @@ decisiones de diseño y guía de extensión/afinado.
 | Validación de datos | Pydantic v2 |
 | Detección | Ultralytics YOLO-World (`yolov8s-worldv2.pt`, zero-shot, ~340 MB) |
 | Video en vivo | aiortc (WebRTC, backend) + JS nativo (front) |
+| Configuración | `app/config.py` (env vars `VISINVENT_*`) |
+| Observabilidad | `logging` + `GET /health` con estado real |
 | Dashboard | Streamlit |
 | Imágenes | Pillow + numpy |
 | Tests | pytest |
@@ -192,8 +194,36 @@ Especificación de negocio completa en `docs/METRICAS_DEFINIDAS.md`.
 - `GET /rtc` responde con
   `Permissions-Policy: camera=(self), microphone=()` (aisla permisos de la página).
 - `RtcOfferRequest.sdp` con `Field(max_length=200_000)` → `422`.
+- **CORS**: `CORSMiddleware` con `allow_origins=settings.cors_origins` (default `*`
+  para POC; el dashboard "oficina" puede abrirse desde otra máquina de la LAN).
+- **Response models**: todas las rutas declaran `response_model=` (tipos Pydantic),
+  por lo que `/docs` (Swagger) expone los contratos de entrada y salida.
 
-## 11. Video en vivo (WebRTC, `app/rtc/`)
+## 11. Observabilidad y configuracion
+
+### Configuracion centralizada (`app/config.py`)
+Constantes de runtime en un `Settings` (dataclass) que se leen de env vars:
+
+| Variable | Default | Uso |
+| --- | --- | --- |
+| `VISINVENT_MAX_UPLOAD_MB` | `10` | tope del archivo subido |
+| `VISINVENT_RTC_INTERVALO_SEG` | `1.0` | throttling del video en vivo |
+| `VISINVENT_RTC_MAX_DIMENSION` | `640` | tamaño maximo de frame para inferencia |
+| `VISINVENT_API_HOST` / `VISINVENT_API_PORT` | `127.0.0.1` / `8000` | binding de la API |
+| `VISINVENT_LOG_LEVEL` | `INFO` | nivel de logging |
+
+### Logging
+`app/logging_config.py::configurar_logging()` se llama al iniciar `app.api.main`.
+Ningún `except` queda silencioso: los caminos del RTC que antes hacían `pass`
+ahora loguean (`logger.exception` / `logger.warning`). Utili en la demo: un fallo
+de inferencia queda visible en la consola de uvicorn.
+
+### Health check real
+`GET /health` ya **no** devuelve un 200 fijo: reporta `modelo_cargado`,
+`zonas`, `auditorias_guardadas` y `disco_libre_bytes`. Permite distinguir "el
+proceso esta arriba" de "el sistema esta operativo".
+
+## 12. Video en vivo (WebRTC, `app/rtc/`)
 
 ### Signaling
 1. El front `GET /rtc` carga `rtc_player.html` (same-origin → contexto seguro para
@@ -226,7 +256,7 @@ Especificación de negocio completa en `docs/METRICAS_DEFINIDAS.md`.
   (`wait=False, cancel_futures=True`); cleanup de `CONEXIONES` en failed/closed y en
   fallo del offer.
 
-## 12. Dashboard (Streamlit)
+## 13. Dashboard (Streamlit)
 
 - Datos cacheados con `@st.cache_data` (TTL 10 s para auditorías) + botón
   "Recargar auditorías" (`st.cache_data.clear()`).
@@ -235,7 +265,7 @@ Especificación de negocio completa en `docs/METRICAS_DEFINIDAS.md`.
 - Área principal: KPIs de la última + **Detalle de auditoría** (evidencia anotada,
   discrepancias, JSON completo).
 
-## 13. Tests
+## 14. Tests
 
 ```powershell
 python -m pytest -q          # suite completa (78 tests verdes)
@@ -251,7 +281,7 @@ Estructura:
 Patrón de stubs: se inyecta un `RealDetector` con `_model` falso (`FakeModel` +
 `FakeResult`/`FakeBoxes`) para no descargar el modelo real.
 
-## 14. Afinado del modelo (sin tocar código)
+## 15. Afinado del modelo (sin tocar código)
 
 ```powershell
 python scripts/validar_deteccion.py --imagen data/demo_images/estante_gaseosas.jpg --zona estanteria_b
@@ -264,7 +294,7 @@ Opciones: `--imagen`, `--zona`, `--conf`, `--max-confs`, `--nms`.
 Regla práctica: elegir `umbral_confianza` tal que las válidas igualen el stock real y
 que las falsas positivas queden bajo el umbral (→ a revisar, no a conteo).
 
-## 15. Decisiones de diseño registradas
+## 16. Decisiones de diseño registradas
 
 - **NMS 0.7** por defecto (trade-off estantes densos vs deduplicación).
 - **Prompts filtrados por zona**: detectan *más* objetos que todas las clases juntas
@@ -276,7 +306,7 @@ que las falsas positivas queden bajo el umbral (→ a revisar, no a conteo).
 - **Resiliencia demo**: flujo de foto→carga manual como respaldo siempre disponible y
   ACK de guardado en el front RTC para no perder el snapshot.
 
-## 16. Extender la aplicación
+## 17. Extender la aplicación
 
 ### Agregar un producto
 1. Añadirlo a `productos_objetivo.json` (id, nombre, prompts, umbral, color).
@@ -292,7 +322,7 @@ que las falsas positivas queden bajo el umbral (→ a revisar, no a conteo).
 Reemplazar `DEFAULT_MODELO` en `real_inference.py` (manteniendo `detectar`/
 `detectar_ndarray` y el mapeo por prompts: requiere API Ultralytics compatible).
 
-## 17. Limitaciones conocidas
+## 18. Limitaciones conocidas
 
 - CPU: ~1 fps de inferencia → el video procesa 1 frame/s.
 - Vocabulario cerrado a los productos definidos; cero-shot depende de la calidad de los

@@ -10,7 +10,13 @@ client = TestClient(app)
 def test_health():
     response = client.get("/health")
     assert response.status_code == 200
-    assert response.json() == {"status": "ok"}
+    body = response.json()
+    assert body["status"] == "ok"
+    assert isinstance(body["modelo_cargado"], bool)
+    assert isinstance(body["zonas"], int)
+    assert body["zonas"] >= 1
+    assert isinstance(body["auditorias_guardadas"], int)
+    assert isinstance(body["disco_libre_bytes"], int)
 
 
 def test_lista_zonas_y_productos():

@@ -139,6 +139,44 @@ if auditorias:
         f'fecha {ultima["fecha_hora"]} - fuente {ultima.get("fuente", "imagen")}'
     )
 
+    st.divider()
+    st.subheader("Metricas ejecutivas")
+    try:
+        costo_hora = float(os.environ.get("COSTO_AUDITOR_HORA", "15"))
+    except ValueError:
+        costo_hora = 15.0
+    ahorro_total = sum(a["metricas"]["tiempo_ahorrado_minutos"] for a in auditorias)
+    con_discrepancia = sum(1 for a in auditorias if a["metricas"]["cantidad_discrepancias"] > 0)
+    pct_ok = 100.0 * (1 - con_discrepancia / len(auditorias)) if auditorias else 0.0
+    unidades_detectadas = sum(a["metricas"]["total_detectado"] for a in auditorias)
+
+    cols2 = st.columns(4)
+    cols2[0].metric("Auditorias realizadas", len(auditorias))
+    cols2[1].metric(
+        "Ahorro total de tiempo",
+        f'{ahorro_total:.0f} min',
+        help="Suma del tiempo manual estimado (0.25 min/unidad) menos el tiempo de procesamiento de la IA.",
+    )
+    cols2[2].metric(
+        "ROI estimado",
+        f"${(ahorro_total / 60) * costo_hora:,.0f}",
+        help=f"Estimacion POC a un costo de auditoria de ${costo_hora:,.0f}/hora.",
+    )
+    cols2[3].metric("Auditorias OK (sin discrepancias)", f"{pct_ok:.0f}%")
+
+    if auditorias:
+        st.caption(f"Unidades detectadas acumuladas: {unidades_detectadas}")
+        por_zona: dict[str, int] = {}
+        for a in auditorias:
+            zona = a["zona_id"]
+            por_zona[zona] = por_zona.get(zona, 0) + 1
+        st.markdown("**Auditorias por zona**")
+        st.dataframe(
+            [{"zona": zonas[z].nombre, "zona_id": z, "auditorias": n} for z, n in por_zona.items()],
+            use_container_width=True,
+            hide_index=True,
+        )
+
     st.subheader("Detalle de auditoria")
     seleccion = st.selectbox(
         "Auditoria",
