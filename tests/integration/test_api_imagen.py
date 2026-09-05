@@ -25,7 +25,9 @@ def _imagen_bytes() -> BytesIO:
 
 
 def test_endpoint_imagen_genera_auditoria(tmp_path, monkeypatch):
-    monkeypatch.setattr("app.audits.service.RealDetector", DetectorEndpointStub)
+    monkeypatch.setattr(
+        "app.audits.service.obtener_detector_compartido", lambda: DetectorEndpointStub()
+    )
     monkeypatch.setattr("app.audits.service.INPUTS_DIR", tmp_path / "inputs")
     monkeypatch.setattr("app.audits.service.EVIDENCIA_DIR", tmp_path / "evidencia")
 
@@ -103,7 +105,9 @@ def test_endpoint_imagen_rechaza_archivo_gigante_413(tmp_path, monkeypatch):
 
 
 def test_endpoint_imagen_acepta_fuente_form(tmp_path, monkeypatch):
-    monkeypatch.setattr("app.audits.service.RealDetector", DetectorEndpointStub)
+    monkeypatch.setattr(
+        "app.audits.service.obtener_detector_compartido", lambda: DetectorEndpointStub()
+    )
 
     class RepoEnTmp(AuditoriaRepository):
         def __init__(self):

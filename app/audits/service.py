@@ -8,7 +8,7 @@ from app.audits.metrics import calcular_metricas
 from app.audits.repository import AuditoriaRepository
 from app.detection.counting import contar_detecciones
 from app.detection.mock_inference import cargar_detecciones_fixture
-from app.detection.real_inference import RealDetector
+from app.detection.real_inference import RealDetector, obtener_detector_compartido
 from app.inventory.compare import comparar_con_stock
 from app.inventory.loader import ROOT_DIR, cargar_productos, cargar_zonas, stock_por_zona
 from app.inventory.schemas import Auditoria, Deteccion, FuenteAuditoria
@@ -118,7 +118,7 @@ def procesar_imagen(
     if not prompts:
         raise ValueError(f"La zona {zona_id} no tiene productos para detectar.")
 
-    model = detector or RealDetector()
+    model = detector or obtener_detector_compartido()
     detecciones = model.detectar(ruta, prompts)
     duracion = time.perf_counter() - inicio
 

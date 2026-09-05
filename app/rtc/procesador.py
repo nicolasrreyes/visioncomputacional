@@ -5,7 +5,7 @@ from datetime import datetime, timezone
 from typing import Any
 
 from app.config import settings
-from app.detection.real_inference import RealDetector
+from app.detection.real_inference import RealDetector, obtener_detector_compartido
 from app.inventory.loader import cargar_productos
 from app.inventory.schemas import Deteccion, Producto
 
@@ -58,7 +58,7 @@ class ProcesadorVideo:
     ) -> None:
         self.zona_id = zona_id
         self.prompts = prompts_por_producto
-        self.detector = detector or RealDetector()
+        self.detector = detector or obtener_detector_compartido()
         self.intervalo_seg = intervalo_seg
         self.max_dimension = max_dimension
         self.productos = productos or cargar_productos()

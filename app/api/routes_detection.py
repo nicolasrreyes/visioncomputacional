@@ -9,7 +9,8 @@ from fastapi import APIRouter, File, Form, HTTPException, UploadFile
 from app.audits.repository import AuditoriaRepository
 from app.audits.service import procesar_imagen, simular_auditoria
 from app.config import settings
-from app.detection.real_inference import ModeloNoDisponibleError, _DETECTOR_COMPARTIDO
+from app.detection import real_inference
+from app.detection.real_inference import ModeloNoDisponibleError
 from app.inventory.loader import cargar_productos, cargar_zonas, stock_por_zona
 from app.inventory.schemas import (
     Auditoria,
@@ -29,7 +30,8 @@ MAX_UPLOAD_BYTES = settings.max_upload_mb * 1024 * 1024
 @router.get("/health")
 def health() -> dict[str, object]:
     modelo_cargado = False
-    if _DETECTOR_COMPARTIDO is not None and _DETECTOR_COMPARTIDO._model is not None:
+    compartido = real_inference._DETECTOR_COMPARTIDO
+    if compartido is not None and compartido._model is not None:
         modelo_cargado = True
     zonas = len(cargar_zonas())
     auditorias = len(AuditoriaRepository().listar())
